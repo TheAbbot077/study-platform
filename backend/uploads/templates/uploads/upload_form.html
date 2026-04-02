@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Upload Document</title>
+</head>
+<body>
+    <h1>Upload Document</h1>
+
+    <form method="post" enctype="multipart/form-data">
+        {% csrf_token %}
+        <div>
+            <label>Title:</label>
+            <input type="text" name="title" required>
+        </div>
+        <br>
+        <div>
+            <label>File:</label>
+            <input type="file" name="file" accept=".pdf" required>
+        </div>
+        <br>
+        <button type="submit">Upload</button>
+    </form>
+</body>
+</html>
