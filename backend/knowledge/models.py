@@ -4,11 +4,12 @@ from pgvector.django import VectorField
 
 class Concept(models.Model):
     name = models.CharField(max_length=255, unique=True)
-    description = models.TextField(blank=True)
-    difficulty = models.FloatField(default=0.5)
-    embedding = VectorField(dimensions=1536, null=True, blank=True)
-    is_general_knowledge = models.BooleanField(default=False)
-    created_at = models.DateTimeField(auto_now_add=True)
+    prerequisites = models.ManyToManyField(
+        "self",
+        symmetrical=False,
+        blank=True,
+        related_name="unlocks",
+    )
 
     def __str__(self):
         return self.name

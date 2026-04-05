@@ -46,19 +46,66 @@ class StudyMessage(models.Model):
         return f"{self.role} - Session {self.session.id}"
 
 
+class ConceptCheckStatus(models.TextChoices):
+    PENDING = "pending", "Pending"
+    ANSWERED = "answered", "Answered"
+    EVALUATED = "evaluated", "Evaluated"
+
+
+class ConceptCheckResult(models.TextChoices):
+    CORRECT = "correct", "Correct"
+    PARTIAL = "partial", "Partial"
+    INCORRECT = "incorrect", "Incorrect"
+
+
 class ConceptCheck(models.Model):
     session = models.ForeignKey(
         StudySession,
         on_delete=models.CASCADE,
-        related_name="checks",
+        related_name="concept_checks",
     )
-    concept = models.ForeignKey("knowledge.Concept", on_delete=models.CASCADE)
+    concept = models.ForeignKey(
+        "knowledge.Concept",
+        on_delete=models.CASCADE,
+        related_name="concept_checks",
+    )
+    source_message = models.ForeignKey(
+        StudyMessage,
+        on_delete=models.SET_NULL,
+        null=True,
+        blank=True,
+        related_name="generated_concept_checks",
+    )
     question = models.TextField()
-    user_answer = models.TextField(blank=True)
-    score = models.FloatField(default=0.0)
+    status = models.CharField(
+        max_length=20,
+        choices=ConceptCheckStatus.choices,
+        default=ConceptCheckStatus.PENDING,
+    )
+    created_at = models.DateTimeField(auto_now_add=True)
+    answered_at = models.DateTimeField(null=True, blank=True)
+    evaluated_at = models.DateTimeField(null=True, blank=True)
+
+    def __str__(self):
+        return f"{self.concept.name} - {self.status}"
+
+
+class ConceptCheckAttempt(models.Model):
+    concept_check = models.ForeignKey(
+        ConceptCheck,
+        on_delete=models.CASCADE,
+        related_name="attempts",
+    )
+    student_answer = models.TextField()
     feedback = models.TextField(blank=True)
-    confidence = models.FloatField(default=0.0)
+    result = models.CharField(
+        max_length=20,
+        choices=ConceptCheckResult.choices,
+        null=True,
+        blank=True,
+    )
+    score = models.FloatField(null=True, blank=True)
     created_at = models.DateTimeField(auto_now_add=True)
 
     def __str__(self):
-        return f"Check for {self.concept.name} in Session {self.session.id}"
+        return f"Attempt for {self.concept_check.concept.name}"
