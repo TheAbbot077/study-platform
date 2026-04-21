@@ -90,6 +90,17 @@ def get_unmastered_prerequisites(user, concept, threshold=0.6):
 
     return unmet
 
+def get_primary_remediation_concept(user, concept, threshold=0.6):
+    """
+    Return the weakest unmet prerequisite for the concept, if any.
+    """
+    unmet = get_unmastered_prerequisites(user, concept, threshold=threshold)
+
+    if not unmet:
+        return None
+
+    unmet.sort(key=lambda item: item["score"])
+    return unmet[0]["concept"]
 
 def get_or_create_session(user):
     session, _ = StudySession.objects.get_or_create(user=user)
@@ -402,6 +413,46 @@ def build_graph_context(concept):
 
     return "\n".join(lines)
 
+def build_remediation_message(failed_concept, prerequisite_concept):
+    return (
+        f"It looks like the difficulty with {failed_concept.name} may come from a gap in "
+        f"{prerequisite_concept.name}.\n\n"
+        f"Let's step back and strengthen {prerequisite_concept.name} first, then we can return to "
+        f"{failed_concept.name} with a stronger foundation."
+    )
+
+def build_remediation_message(failed_concept, prerequisite_concept):
+    return (
+        f"It looks like the difficulty with {failed_concept.name} may come from a gap in "
+        f"{prerequisite_concept.name}.\n\n"
+        f"Let's step back and strengthen {prerequisite_concept.name} first, then we can return to "
+        f"{failed_concept.name} with a stronger foundation."
+    )
+
+def build_followup_prompt(attempt_result, concept, remediation_concept=None):
+    if remediation_concept:
+        return (
+            f"Next step: let's rebuild the foundation with {remediation_concept.name}.\n\n"
+            f"Try this: in one or two sentences, explain the key idea behind {remediation_concept.name}."
+        )
+
+    if attempt_result == "correct":
+        return (
+            f"Next step: let's deepen your understanding of {concept.name}.\n\n"
+            f"Try this: apply {concept.name} to a real-world example in your own words."
+        )
+
+    if attempt_result == "partial":
+        return (
+            f"Next step: focus on the missing piece in {concept.name}.\n\n"
+            f"Try this: answer again, but this time make sure you explain the main purpose or mechanism clearly."
+        )
+
+    return (
+        f"Next step: let's slow down and rebuild {concept.name} step by step.\n\n"
+        f"Try this: give a very simple explanation of {concept.name}, as if teaching it to a beginner."
+    )
+
 def build_messages(
     query,
     context,
@@ -595,12 +646,18 @@ def answer_question(
             mastery.hint_level = 0
         mastery.save(update_fields=["hint_level"])
 
+        remediation_concept = None
+
         if attempt.result == "correct":
             status_line = "Nice work — your understanding is improving."
         elif attempt.result == "partial":
             status_line = "Good progress — you have part of it, but there is still a gap to close."
         else:
             status_line = "That shows a gap in understanding, so the tutor will slow down and scaffold more."
+            remediation_concept = get_primary_remediation_concept(
+                user=user,
+                concept=pending_check.concept,
+            )
 
         reply = (
             f"{attempt.feedback}\n\n"
@@ -609,7 +666,33 @@ def answer_question(
             f"{mastery.mastery_score:.2f})"
         )
 
-        next_step = build_next_step_data(user, pending_check.concept)
+        followup_prompt = build_followup_prompt(
+            attempt_result=attempt.result,
+            concept=pending_check.concept,
+            remediation_concept=remediation_concept,
+        )
+
+        reply = f"{reply}\n\n{followup_prompt}"
+
+        concept_switched = False
+        previous_concept_name = session.target_concept.name if session.target_concept else None
+
+        if remediation_concept:
+            remediation_message = build_remediation_message(
+                failed_concept=pending_check.concept,
+                prerequisite_concept=remediation_concept,
+            )
+            reply = f"{reply}\n\n{remediation_message}"
+
+            if should_switch_concept(session.target_concept, remediation_concept):
+                session.target_concept = remediation_concept
+                session.save(update_fields=["target_concept"])
+                concept_switched = True
+
+        next_step = build_next_step_data(
+            user,
+            remediation_concept if remediation_concept else pending_check.concept,
+        )
 
         StudyMessage.objects.create(
             session=session,
@@ -620,12 +703,15 @@ def answer_question(
         return {
             "query": query,
             "answer": reply,
-            "focused_concept": pending_check.concept.name,
+            "focused_concept": (
+                remediation_concept.name if remediation_concept else pending_check.concept.name
+            ),
             "concept_switched": concept_switched,
             "previous_concept": previous_concept_name,
             "mastery_score": mastery.mastery_score,
             "session_type": session.session_type,
             "next_step": next_step,
+            "next_action_prompt": followup_prompt,
         }
 
     concept = selected_concept
@@ -656,6 +742,7 @@ def answer_question(
             "mastery_score": None,
             "session_type": session.session_type,
             "next_step": build_next_step_data(user, concept),
+            "next_action_prompt": None,
         }
 
     mastery = get_or_create_mastery(user, concept)
@@ -757,4 +844,5 @@ def answer_question(
         "mastery_score": updated_mastery_score,
         "session_type": session.session_type,
         "next_step": build_next_step_data(user, concept),
+        "next_action_prompt": None,
     }

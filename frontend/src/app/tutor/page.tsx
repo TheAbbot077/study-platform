@@ -22,6 +22,7 @@ type TutorResponse = {
   mastery_score?: number | null;
   session_type?: string;
   next_step?: NextStep | null;
+  next_action_prompt?: string | null;
 };
 
 type Subject = {
@@ -73,15 +74,36 @@ function MasteryProgressBar({ score = 0 }: { score?: number | null }) {
   const safeScore = typeof score === "number" ? score : 0;
   const percentage = Math.max(0, Math.min(100, Math.round(safeScore * 100)));
 
+  let barColor = "bg-red-500";
+
+  if (safeScore >= 0.9) {
+    barColor = "bg-green-500";
+  } else if (safeScore >= 0.7) {
+    barColor = "bg-blue-500";
+  } else if (safeScore >= 0.4) {
+    barColor = "bg-yellow-500";
+  }
+
   return (
     <div>
       <div className="mb-1 flex items-center justify-between text-xs text-gray-500">
         <span>Mastery</span>
-        <span>{percentage}%</span>
+        <span>
+          {percentage}%{" "}
+          <span className="text-xs text-gray-400">
+            {safeScore >= 0.9
+              ? "Mastered"
+              : safeScore >= 0.7
+              ? "Strong"
+              : safeScore >= 0.4
+              ? "Developing"
+              : "Needs work"}
+          </span>
+        </span>
       </div>
-      <div className="h-2 w-full rounded-full bg-gray-200">
+      <div className="h-3 rounded-full ${barColor} transition-all duration-500 shadow-[0_0_8px_rgba(0,0,0,0.1)]">
         <div
-          className="h-2 rounded-full bg-gray-900 transition-all"
+          className={`h-3 rounded-full ${barColor} transition-all duration-500`}
           style={{ width: `${percentage}%` }}
         />
       </div>
@@ -109,6 +131,7 @@ export default function TutorPage() {
   const [loadingSubjects, setLoadingSubjects] = useState(true);
   const [error, setError] = useState("");
   const [switchNotice, setSwitchNotice] = useState("");
+  const [dataNextAction, setDataNextAction] = useState<string>("");
 
   useEffect(() => {
     async function loadSubjects() {
@@ -163,6 +186,7 @@ export default function TutorPage() {
       );
       setSessionType(result.session_type || "");
       setNextStep(result.next_step || null);
+      setDataNextAction(result.next_action_prompt || "");
       setQuery("");
 
       const matchedSubject = subjects.find(
@@ -242,7 +266,7 @@ export default function TutorPage() {
           <div className="rounded-2xl border border-green-200 bg-green-50 p-4">
             <div className="flex items-start justify-between gap-3">
               <div>
-                <p className="text-sm text-green-700">Updated mastery</p>
+                <p className="text-sm text-green-700">Mastery progress</p>
                 <p className="mt-1 text-lg font-semibold text-green-900">
                   {focusedConcept ? focusedConcept : "Current concept"}
                 </p>
@@ -253,10 +277,13 @@ export default function TutorPage() {
             <div className="mt-4">
               <MasteryProgressBar score={masteryScore} />
             </div>
+          </div>
+        )}
 
-            <p className="mt-3 text-sm text-green-800">
-              Your current mastery score is {masteryScore.toFixed(2)}.
-            </p>
+        {dataNextAction && (
+          <div className="rounded-2xl border border-amber-200 bg-amber-50 p-4">
+            <p className="text-sm font-medium text-amber-800">Do this next</p>
+            <p className="mt-2 text-sm text-amber-900">{dataNextAction}</p>
           </div>
         )}
 
@@ -314,8 +341,8 @@ export default function TutorPage() {
             value={query}
             onChange={(e) => setQuery(e.target.value)}
             placeholder={
-              selectedConcept
-                ? `Ask something about ${selectedConcept}...`
+              focusedConcept
+                ? `Ask something about ${focusedConcept}...`
                 : "Ask any study question..."
             }
             rows={6}
