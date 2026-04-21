@@ -50,6 +50,7 @@ class ConceptCheckStatus(models.TextChoices):
     PENDING = "pending", "Pending"
     ANSWERED = "answered", "Answered"
     EVALUATED = "evaluated", "Evaluated"
+    CANCELLED = "cancelled", "Cancelled"
 
 
 class ConceptCheckResult(models.TextChoices):
@@ -85,6 +86,8 @@ class ConceptCheck(models.Model):
     created_at = models.DateTimeField(auto_now_add=True)
     answered_at = models.DateTimeField(null=True, blank=True)
     evaluated_at = models.DateTimeField(null=True, blank=True)
+    cancelled_at = models.DateTimeField(null=True, blank=True)
+    cancel_reason = models.CharField(max_length=255, blank=True)
 
     def __str__(self):
         return f"{self.concept.name} - {self.status}"

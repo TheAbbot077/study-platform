@@ -18,6 +18,9 @@ out/
 
 # Env
 .env
+.env.*
+*.env
+
 
 # OS / editor
 .DS_Store
@@ -26,3 +29,8 @@ Thumbs.db
 
 # Logs
 *.log
+
+backup.sql
+*.sql
+
+

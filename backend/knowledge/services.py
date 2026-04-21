@@ -3,11 +3,16 @@ from uploads.services import get_embedding
 from .models import DocumentChunk
 
 
-def semantic_search(query: str, limit=5):
+def semantic_search(query: str, limit=5, subject_id=None):
     query_embedding = get_embedding(query)
 
+    chunks = DocumentChunk.objects.all()
+
+    if subject_id:
+        chunks = chunks.filter(document__subject_id=subject_id)
+
     chunks = (
-        DocumentChunk.objects.annotate(
+        chunks.annotate(
             distance=L2Distance("embedding", query_embedding)
         )
         .order_by("distance")[:limit]

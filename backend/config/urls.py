@@ -8,6 +8,8 @@ urlpatterns = [
     path("api/uploads/", include("uploads.urls")),
     path("", include("uploads.urls")),
     path("api/tutor/", include("tutoring.urls")),
+    path("api/learning/", include("learning.urls")),
+    path("api/accounts/", include("accounts.urls")),
 ]
 
 if settings.DEBUG:
