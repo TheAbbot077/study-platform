@@ -1,0 +1,152 @@
+services:
+  - type: keyvalue
+    name: abbot-study-redis
+    ipAllowList: []
+
+  - type: web
+    name: abbot-study-api
+    runtime: python
+    rootDir: backend
+    buildCommand: pip install -r requirements.txt && python manage.py collectstatic --noinput
+    preDeployCommand: python manage.py migrate
+    startCommand: gunicorn config.wsgi:application --bind 0.0.0.0:$PORT --workers 3 --timeout 180
+    healthCheckPath: /health/
+    envVars:
+      - fromGroup: abbot-study-backend
+      - key: DATABASE_URL
+        fromDatabase:
+          name: abbot-study-db
+          property: connectionString
+      - key: CELERY_BROKER_URL
+        fromService:
+          type: keyvalue
+          name: abbot-study-redis
+          property: connectionString
+      - key: CELERY_RESULT_BACKEND
+        fromService:
+          type: keyvalue
+          name: abbot-study-redis
+          property: connectionString
+      - key: OPENAI_API_KEY
+        sync: false
+      - key: AWS_ACCESS_KEY_ID
+        sync: false
+      - key: AWS_SECRET_ACCESS_KEY
+        sync: false
+      - key: AWS_STORAGE_BUCKET_NAME
+        sync: false
+      - key: AWS_S3_REGION_NAME
+        sync: false
+      - key: AWS_S3_ENDPOINT_URL
+        sync: false
+      - key: AWS_S3_CUSTOM_DOMAIN
+        sync: false
+
+  - type: worker
+    name: abbot-study-worker
+    runtime: python
+    rootDir: backend
+    buildCommand: pip install -r requirements.txt
+    startCommand: celery -A config worker -l info --concurrency=${CELERY_WORKER_CONCURRENCY:-4} --prefetch-multiplier=${CELERY_WORKER_PREFETCH_MULTIPLIER:-1} -O fair
+    envVars:
+      - fromGroup: abbot-study-backend
+      - key: DATABASE_URL
+        fromDatabase:
+          name: abbot-study-db
+          property: connectionString
+      - key: CELERY_BROKER_URL
+        fromService:
+          type: keyvalue
+          name: abbot-study-redis
+          property: connectionString
+      - key: CELERY_RESULT_BACKEND
+        fromService:
+          type: keyvalue
+          name: abbot-study-redis
+          property: connectionString
+      - key: OPENAI_API_KEY
+        fromService:
+          type: web
+          name: abbot-study-api
+          envVarKey: OPENAI_API_KEY
+      - key: AWS_ACCESS_KEY_ID
+        fromService:
+          type: web
+          name: abbot-study-api
+          envVarKey: AWS_ACCESS_KEY_ID
+      - key: AWS_SECRET_ACCESS_KEY
+        fromService:
+          type: web
+          name: abbot-study-api
+          envVarKey: AWS_SECRET_ACCESS_KEY
+      - key: AWS_STORAGE_BUCKET_NAME
+        fromService:
+          type: web
+          name: abbot-study-api
+          envVarKey: AWS_STORAGE_BUCKET_NAME
+      - key: AWS_S3_REGION_NAME
+        fromService:
+          type: web
+          name: abbot-study-api
+          envVarKey: AWS_S3_REGION_NAME
+      - key: AWS_S3_ENDPOINT_URL
+        fromService:
+          type: web
+          name: abbot-study-api
+          envVarKey: AWS_S3_ENDPOINT_URL
+      - key: AWS_S3_CUSTOM_DOMAIN
+        fromService:
+          type: web
+          name: abbot-study-api
+          envVarKey: AWS_S3_CUSTOM_DOMAIN
+
+  - type: web
+    name: abbot-study-web
+    runtime: node
+    rootDir: frontend
+    buildCommand: npm ci && npm run build
+    startCommand: npm run start
+    healthCheckPath: /
+    envVars:
+      - key: NODE_ENV
+        value: production
+      - key: NEXT_PUBLIC_API_BASE_URL
+        value: ""
+      - key: INTERNAL_API_HOSTPORT
+        fromService:
+          type: web
+          name: abbot-study-api
+          property: hostport
+
+databases:
+  - name: abbot-study-db
+
+envVarGroups:
+  - name: abbot-study-backend
+    envVars:
+      - key: DJANGO_SECRET_KEY
+        generateValue: true
+      - key: DJANGO_DEBUG
+        value: "0"
+      - key: DJANGO_ALLOWED_HOSTS
+        value: ".onrender.com,localhost,127.0.0.1"
+      - key: CORS_ALLOWED_ORIGIN_REGEXES
+        value: "^https://.*\\.onrender\\.com$"
+      - key: CSRF_TRUSTED_ORIGINS
+        value: "https://*.onrender.com"
+      - key: DJANGO_SECURE_SSL_REDIRECT
+        value: "1"
+      - key: SESSION_COOKIE_SECURE
+        value: "1"
+      - key: CSRF_COOKIE_SECURE
+        value: "1"
+      - key: SECURE_HSTS_SECONDS
+        value: "3600"
+      - key: SECURE_HSTS_INCLUDE_SUBDOMAINS
+        value: "1"
+      - key: CELERY_WORKER_CONCURRENCY
+        value: "4"
+      - key: CELERY_WORKER_PREFETCH_MULTIPLIER
+        value: "1"
+      - key: USE_S3_MEDIA_STORAGE
+        value: "1"
