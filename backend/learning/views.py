@@ -1,116 +1,56 @@
-from rest_framework.views import APIView
-from rest_framework.response import Response
 from rest_framework.permissions import IsAuthenticated
+from rest_framework.response import Response
+from rest_framework.views import APIView
 
-from uploads.models import Subject, Document
-from learning.models import LearnerConceptMastery
 from .services import (
     get_progress_summary,
-    get_personalized_recommendations,
+    get_reinforcement_plan,
+    get_next_reinforcement_target,
 )
 
 
-class LearningProgressAPIView(APIView):
+class ProgressSummaryAPIView(APIView):
     permission_classes = [IsAuthenticated]
 
     def get(self, request):
-        user = request.user
+        summary = get_progress_summary(request.user)
+        return Response(summary)
 
-        summary = get_progress_summary(user)
 
-        user_subjects = Subject.objects.filter(user=user).prefetch_related("documents")
+class ReinforcementPlanAPIView(APIView):
+    permission_classes = [IsAuthenticated]
 
-        mastery_records = (
-            LearnerConceptMastery.objects.filter(user=user)
-            .select_related("concept")
-            .order_by("concept__name")
+    def get(self, request):
+        limit = request.query_params.get("limit", 5)
+
+        try:
+            limit = int(limit)
+        except (TypeError, ValueError):
+            limit = 5
+
+        if limit < 1:
+            limit = 1
+        if limit > 10:
+            limit = 10
+
+        plan = get_reinforcement_plan(request.user, limit=limit)
+        next_target = get_next_reinforcement_target(request.user)
+
+        safe_items = []
+        for item in plan["items"]:
+            safe_item = {k: v for k, v in item.items() if k != "concept"}
+            safe_items.append(safe_item)
+
+        safe_next_target = None
+        if next_target:
+            safe_next_target = {k: v for k, v in next_target.items() if k != "concept"}
+
+        return Response(
+            {
+                "next_target": safe_next_target,
+                "plan": {
+                    "count": len(safe_items),
+                    "items": safe_items,
+                },
+            }
         )
-
-        studied_concepts = []
-        for record in mastery_records:
-            studied_concepts.append({
-                "id": record.concept.id,
-                "name": record.concept.name,
-                "mastery_score": record.mastery_score,
-                "practice_count": record.practice_count,
-                "last_practiced": record.last_practiced,
-            })
-
-        subjects = []
-        for subject in user_subjects:
-            subject_documents = subject.documents.all()
-
-            mastery_scores = [
-                record.mastery_score
-                for record in mastery_records
-                if record.mastery_score is not None
-            ]
-
-            average_mastery = (
-                sum(mastery_scores) / len(mastery_scores)
-                if mastery_scores
-                else None
-            )
-
-            subjects.append({
-                "id": subject.id,
-                "name": subject.name,
-                "document_count": subject_documents.count(),
-                "average_mastery": average_mastery,
-                "documents": [
-                    {
-                        "id": doc.id,
-                        "title": doc.title,
-                        "status": doc.status,
-                        "created_at": doc.created_at,
-                    }
-                    for doc in subject_documents
-                ],
-            })
-
-        recommended_concepts = []
-        for item in get_personalized_recommendations(user, limit=5):
-            recommended_concepts.append({
-                "id": item["concept"].id,
-                "name": item["concept"].name,
-                "mastery_score": item["score"],
-                "mastery_label": item["mastery_label"],
-                "action": item["action"],
-                "reason": item["reason"],
-                "practice_count": item["practice_count"],
-                "is_unlocked": item["is_unlocked"],
-                "blocked_by": [
-                    {
-                        "id": blocker["concept"].id,
-                        "name": blocker["concept"].name,
-                        "score": blocker["score"],
-                        "mastery_label": blocker["mastery_label"],
-                    }
-                    for blocker in item["blocked_by"]
-                ],
-            })
-
-        top_recommendation = recommended_concepts[0] if recommended_concepts else None
-
-        message = None
-        if top_recommendation:
-            message = (
-                f"Best next step: {top_recommendation['name']} "
-                f"({top_recommendation['action']})"
-            )
-
-        overall = {
-            "total_subjects": Subject.objects.filter(user=user).count(),
-            "total_documents": Document.objects.filter(user=user).count(),
-            "total_concepts_studied": mastery_records.count(),
-        }
-
-        return Response({
-            "summary": summary,
-            "overall": overall,
-            "subjects": subjects,
-            "studied_concepts": studied_concepts,
-            "recommended_concepts": recommended_concepts,
-            "top_recommendation": top_recommendation,
-            "message": message,
-        })

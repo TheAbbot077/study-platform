@@ -3,6 +3,17 @@ from pgvector.django import VectorField
 
 
 class Concept(models.Model):
+    NODE_TYPES = [
+        ("CHAPTER", "Chapter"),
+        ("CONCEPT", "Concept"),
+        ("SUBTOPIC", "Subtopic"),
+    ]
+    DIFFICULTY_STAGES = [
+        ("FOUNDATION", "Foundation"),
+        ("CORE", "Core"),
+        ("ADVANCED", "Advanced"),
+    ]
+
     subject = models.ForeignKey(
         "uploads.Subject",
         on_delete=models.CASCADE,
@@ -19,6 +30,25 @@ class Concept(models.Model):
     )
     name = models.CharField(max_length=255)
     description = models.TextField(blank=True, default="")
+    node_type = models.CharField(
+        max_length=20,
+        choices=NODE_TYPES,
+        default="CONCEPT",
+        db_default="CONCEPT",
+    )
+    parent = models.ForeignKey(
+        "self",
+        null=True,
+        blank=True,
+        on_delete=models.CASCADE,
+        related_name="children",
+    )
+    syllabus_order = models.PositiveIntegerField(default=0)
+    difficulty_stage = models.CharField(
+        max_length=20,
+        choices=DIFFICULTY_STAGES,
+        default="FOUNDATION",
+    )
     prerequisites = models.ManyToManyField(
         "self",
         symmetrical=False,
@@ -34,6 +64,18 @@ class Concept(models.Model):
         if self.subject:
             return f"{self.name} ({self.subject.name})"
         return self.name
+
+    @property
+    def is_chapter(self):
+        return self.node_type == "CHAPTER"
+
+    @property
+    def is_concept(self):
+        return self.node_type == "CONCEPT"
+
+    @property
+    def is_subtopic(self):
+        return self.node_type == "SUBTOPIC"
 
 
 class ConceptRelation(models.Model):

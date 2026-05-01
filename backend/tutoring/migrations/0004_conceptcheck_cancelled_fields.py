@@ -4,7 +4,7 @@ from django.db import migrations, models
 class Migration(migrations.Migration):
 
     dependencies = [
-        ("tutoring", "0001_initial"),
+        ("tutoring", "0002_remove_conceptcheck_confidence_and_more"),
     ]
 
     operations = [

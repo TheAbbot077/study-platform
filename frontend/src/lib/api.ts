@@ -13,9 +13,15 @@ function getCookie(name: string): string | null {
 }
 
 const configuredApiBaseUrl = process.env.NEXT_PUBLIC_API_BASE_URL;
+const isLocalBrowser =
+  typeof window !== "undefined" &&
+  (window.location.hostname === "localhost" ||
+    window.location.hostname === "127.0.0.1");
 const API_BASE_URL =
   configuredApiBaseUrl === undefined
-    ? "http://localhost:8000"
+    ? isLocalBrowser
+      ? "http://localhost:8000"
+      : ""
     : configuredApiBaseUrl.replace(/\/$/, "");
 
 export class ApiError extends Error {
@@ -123,10 +129,16 @@ export function getDisplayErrorMessage(
 }
 
 export async function ensureCsrfCookie() {
-  await fetch(`${API_BASE_URL}/api/accounts/csrf/`, {
-    method: "GET",
-    credentials: "include",
-  });
+  try {
+    await fetch(`${API_BASE_URL}/api/accounts/csrf/`, {
+      method: "GET",
+      credentials: "include",
+    });
+  } catch {
+    throw new Error(
+      "Could not reach the server. Please check that the app and API are deployed and try again."
+    );
+  }
 }
 
 export async function apiFetch(url: string, options: RequestInit = {}) {
@@ -138,15 +150,23 @@ export async function apiFetch(url: string, options: RequestInit = {}) {
     csrfToken = getCookie("csrftoken");
   }
 
-  const response = await fetch(`${API_BASE_URL}${url}`, {
-    credentials: "include",
-    headers: {
-      ...(isFormData ? {} : { "Content-Type": "application/json" }),
-      ...(csrfToken ? { "X-CSRFToken": csrfToken } : {}),
-      ...(options.headers || {}),
-    },
-    ...options,
-  });
+  let response: Response;
+
+  try {
+    response = await fetch(`${API_BASE_URL}${url}`, {
+      credentials: "include",
+      headers: {
+        ...(isFormData ? {} : { "Content-Type": "application/json" }),
+        ...(csrfToken ? { "X-CSRFToken": csrfToken } : {}),
+        ...(options.headers || {}),
+      },
+      ...options,
+    });
+  } catch {
+    throw new Error(
+      "Could not reach the server. Please check that the app and API are deployed and try again."
+    );
+  }
 
   const text = await response.text();
 
