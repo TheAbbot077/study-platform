@@ -150,3 +150,5 @@ envVarGroups:
         value: "1"
       - key: USE_S3_MEDIA_STORAGE
         value: "1"
+      - key: AWS_S3_CUSTOM_DOMAIN
+        value: ""
