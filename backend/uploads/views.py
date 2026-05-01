@@ -7,6 +7,7 @@ from rest_framework.permissions import IsAuthenticated
 from .models import Document, Subject
 from .serializers import DocumentSerializer, SubjectSerializer
 from .tasks import process_document_task
+from .services import rebuild_subject_from_documents
 
 
 class SubjectListCreateAPIView(APIView):
@@ -64,6 +65,7 @@ class DocumentListAPIView(APIView):
                 "title": document.title,
                 "file": document.file.url if document.file else "",
                 "status": document.status,
+                "processing_error": document.processing_error,
                 "created_at": document.created_at,
                 "subject": (
                     {
@@ -106,6 +108,25 @@ class DocumentUploadView(APIView):
             )
 
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+
+class SubjectSyllabusRebuildAPIView(APIView):
+    permission_classes = [IsAuthenticated]
+
+    def post(self, request, subject_id):
+        try:
+            subject = Subject.objects.get(
+                id=subject_id,
+                user=request.user,
+            )
+        except Subject.DoesNotExist:
+            return Response(
+                {"error": "Selected subject was not found."},
+                status=status.HTTP_404_NOT_FOUND,
+            )
+
+        result = rebuild_subject_from_documents(subject)
+        return Response(result, status=status.HTTP_200_OK)
 
 
 def upload_document_page(request):

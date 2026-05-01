@@ -11,5 +11,13 @@ class SubjectSerializer(serializers.ModelSerializer):
 class DocumentSerializer(serializers.ModelSerializer):
     class Meta:
         model = Document
-        fields = ["id", "title", "file", "status", "created_at", "subject"]
-        read_only_fields = ["id", "status", "created_at"]
+        fields = [
+            "id",
+            "title",
+            "file",
+            "status",
+            "processing_error",
+            "created_at",
+            "subject",
+        ]
+        read_only_fields = ["id", "status", "processing_error", "created_at"]
