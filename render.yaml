@@ -47,7 +47,7 @@ services:
     runtime: python
     rootDir: backend
     buildCommand: pip install -r requirements.txt
-    startCommand: celery -A config worker -l info --concurrency=${CELERY_WORKER_CONCURRENCY:-4} --prefetch-multiplier=${CELERY_WORKER_PREFETCH_MULTIPLIER:-1} -O fair
+    startCommand: celery -A config worker -l info --concurrency=${CELERY_WORKER_CONCURRENCY:-1} --prefetch-multiplier=${CELERY_WORKER_PREFETCH_MULTIPLIER:-1} --max-tasks-per-child=${CELERY_MAX_TASKS_PER_CHILD:-1} -O fair
     envVars:
       - fromGroup: abbot-study-backend
       - key: DATABASE_URL
@@ -146,9 +146,15 @@ envVarGroups:
       - key: SECURE_HSTS_INCLUDE_SUBDOMAINS
         value: "1"
       - key: CELERY_WORKER_CONCURRENCY
-        value: "4"
+        value: "1"
       - key: CELERY_WORKER_PREFETCH_MULTIPLIER
         value: "1"
+      - key: CELERY_MAX_TASKS_PER_CHILD
+        value: "1"
+      - key: EMBEDDING_BATCH_SIZE
+        value: "8"
+      - key: CHUNK_BULK_INSERT_SIZE
+        value: "50"
       - key: USE_S3_MEDIA_STORAGE
         value: "1"
       - key: AWS_S3_CUSTOM_DOMAIN

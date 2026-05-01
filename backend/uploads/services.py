@@ -937,12 +937,14 @@ def _append_document_chunks(document, text: str):
     starting_index = 0 if existing_max_chunk is None else existing_max_chunk + 1
 
     chunks = chunk_text(text)
-    prepared_chunks = []
+    prepared_batch = []
+
     for offset, chunk in enumerate(chunks):
         cleaned_chunk = clean_text(chunk)
         if not cleaned_chunk.strip():
             continue
-        prepared_chunks.append(
+
+        prepared_batch.append(
             {
                 "chunk_index": starting_index + offset,
                 "content": cleaned_chunk,
@@ -950,34 +952,46 @@ def _append_document_chunks(document, text: str):
             }
         )
 
-    for start in range(0, len(prepared_chunks), EMBEDDING_BATCH_SIZE):
-        batch = prepared_chunks[start:start + EMBEDDING_BATCH_SIZE]
-        batch_texts = [item["content"] for item in batch]
-        try:
-            embeddings = get_embeddings(batch_texts)
-            for item, embedding in zip(batch, embeddings):
-                item["embedding"] = embedding
-        except Exception as exc:
-            first_index = batch[0]["chunk_index"]
-            last_index = batch[-1]["chunk_index"]
-            print(
-                f"Embedding failed for chunks {first_index}-{last_index} "
-                f"of document {document.id}: {exc}"
-            )
+        if len(prepared_batch) < EMBEDDING_BATCH_SIZE:
+            continue
 
-    if prepared_chunks:
-        DocumentChunk.objects.bulk_create(
-            [
-                DocumentChunk(
-                    document=document,
-                    content=item["content"],
-                    chunk_index=item["chunk_index"],
-                    embedding=item["embedding"],
-                )
-                for item in prepared_chunks
-            ],
-            batch_size=CHUNK_BULK_INSERT_SIZE,
+        _flush_document_chunk_batch(document, prepared_batch)
+        prepared_batch = []
+
+    if prepared_batch:
+        _flush_document_chunk_batch(document, prepared_batch)
+
+
+def _flush_document_chunk_batch(document, prepared_batch):
+    batch_texts = [item["content"] for item in prepared_batch]
+    try:
+        embeddings = get_embeddings(batch_texts)
+        for item, embedding in zip(prepared_batch, embeddings):
+            item["embedding"] = embedding
+    except Exception as exc:
+        first_index = prepared_batch[0]["chunk_index"]
+        last_index = prepared_batch[-1]["chunk_index"]
+        print(
+            f"Embedding failed for chunks {first_index}-{last_index} "
+            f"of document {document.id}: {exc}"
         )
+
+    if prepared_batch:
+        try:
+            DocumentChunk.objects.bulk_create(
+                [
+                    DocumentChunk(
+                        document=document,
+                        content=item["content"],
+                        chunk_index=item["chunk_index"],
+                        embedding=item["embedding"],
+                    )
+                    for item in prepared_batch
+                ],
+                batch_size=CHUNK_BULK_INSERT_SIZE,
+            )
+        finally:
+            prepared_batch.clear()
 
 
 def _refresh_document_status_from_sections(document):
