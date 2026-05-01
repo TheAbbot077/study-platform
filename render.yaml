@@ -95,10 +95,7 @@ services:
           name: abbot-study-api
           envVarKey: AWS_S3_ENDPOINT_URL
       - key: AWS_S3_CUSTOM_DOMAIN
-        fromService:
-          type: web
-          name: abbot-study-api
-          envVarKey: AWS_S3_CUSTOM_DOMAIN
+        value: ""
 
   - type: web
     name: abbot-study-web
