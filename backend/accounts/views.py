@@ -1,5 +1,6 @@
 from django.contrib.auth import authenticate, login, logout, get_user_model
 from django.db.models import Avg, Count
+from django.middleware.csrf import get_token
 from django.views.decorators.csrf import ensure_csrf_cookie
 from django.utils.decorators import method_decorator
 from django.utils import timezone
@@ -268,7 +269,13 @@ class CSRFAPIView(APIView):
     permission_classes = [AllowAny]
 
     def get(self, request):
-        return Response({"detail": "CSRF cookie set."}, status=status.HTTP_200_OK)
+        return Response(
+            {
+                "detail": "CSRF cookie set.",
+                "csrfToken": get_token(request),
+            },
+            status=status.HTTP_200_OK,
+        )
 
 
 class SignupAPIView(APIView):

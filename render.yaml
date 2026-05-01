@@ -137,6 +137,10 @@ envVarGroups:
         value: "1"
       - key: CSRF_COOKIE_SECURE
         value: "1"
+      - key: SESSION_COOKIE_SAMESITE
+        value: "None"
+      - key: CSRF_COOKIE_SAMESITE
+        value: "None"
       - key: SECURE_HSTS_SECONDS
         value: "3600"
       - key: SECURE_HSTS_INCLUDE_SUBDOMAINS

@@ -12,6 +12,8 @@ function getCookie(name: string): string | null {
   return null;
 }
 
+let cachedCsrfToken: string | null = null;
+
 const configuredApiBaseUrl = process.env.NEXT_PUBLIC_API_BASE_URL;
 const isLocalBrowser =
   typeof window !== "undefined" &&
@@ -130,10 +132,23 @@ export function getDisplayErrorMessage(
 
 export async function ensureCsrfCookie() {
   try {
-    await fetch(`${API_BASE_URL}/api/accounts/csrf/`, {
+    const response = await fetch(`${API_BASE_URL}/api/accounts/csrf/`, {
       method: "GET",
       credentials: "include",
     });
+
+    if (!response.ok) {
+      throw new Error("Failed to initialize CSRF protection.");
+    }
+
+    const payload = await response.json().catch(() => null);
+    if (
+      payload &&
+      typeof payload === "object" &&
+      typeof (payload as { csrfToken?: unknown }).csrfToken === "string"
+    ) {
+      cachedCsrfToken = (payload as { csrfToken: string }).csrfToken;
+    }
   } catch {
     throw new Error(
       "Could not reach the server. Please check that the app and API are deployed and try again."
@@ -143,11 +158,11 @@ export async function ensureCsrfCookie() {
 
 export async function apiFetch(url: string, options: RequestInit = {}) {
   const isFormData = options.body instanceof FormData;
-  let csrfToken = getCookie("csrftoken");
+  let csrfToken = getCookie("csrftoken") || cachedCsrfToken;
 
   if (!csrfToken) {
     await ensureCsrfCookie();
-    csrfToken = getCookie("csrftoken");
+    csrfToken = getCookie("csrftoken") || cachedCsrfToken;
   }
 
   let response: Response;
