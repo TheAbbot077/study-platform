@@ -1,9 +1,12 @@
 import type { NextConfig } from "next";
 
+const explicitServerApiBaseUrl = process.env.NEXT_SERVER_API_BASE_URL;
 const internalApiHostport = process.env.INTERNAL_API_HOSTPORT;
-const internalApiBaseUrl = internalApiHostport
-  ? `http://${internalApiHostport}`
-  : process.env.NEXT_SERVER_API_BASE_URL;
+const internalApiBaseUrl = explicitServerApiBaseUrl
+  ? explicitServerApiBaseUrl.replace(/\/$/, "")
+  : internalApiHostport
+    ? `http://${internalApiHostport}`
+    : undefined;
 
 const nextConfig: NextConfig = {
   reactCompiler: true,
