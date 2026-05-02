@@ -1,0 +1,236 @@
+"use client";
+
+import Link from "next/link";
+import { usePathname, useRouter, useSearchParams } from "next/navigation";
+import { ReactNode, Suspense, useEffect, useMemo, useState } from "react";
+import { apiFetch, getDisplayErrorMessage } from "../lib/api";
+
+const publicRoutes = new Set(["/", "/login", "/signup"]);
+
+const baseNavItems = [
+  { href: "/subjects", label: "Dashboard" },
+  { href: "/upload", label: "Upload" },
+  { href: "/progress", label: "Progress" },
+  { href: "/tutor", label: "Tutor" },
+];
+
+type CurrentUser = {
+  id: number;
+  username: string;
+  email: string;
+  is_staff?: boolean;
+  is_superuser?: boolean;
+};
+
+function isActivePath(pathname: string, href: string) {
+  return pathname === href || pathname.startsWith(`${href}/`);
+}
+
+function AppShellContent({ children }: { children: ReactNode }) {
+  const pathname = usePathname();
+  const searchParams = useSearchParams();
+  const router = useRouter();
+  const [loggingOut, setLoggingOut] = useState(false);
+  const [logoutError, setLogoutError] = useState("");
+  const [currentUser, setCurrentUser] = useState<CurrentUser | null>(null);
+  const isTutorFocusMode =
+    pathname === "/tutor" && searchParams.get("focus") === "1";
+  const navItems = useMemo(() => {
+    if (currentUser?.is_staff) {
+      return [...baseNavItems, { href: "/admin", label: "Admin" }];
+    }
+    return baseNavItems;
+  }, [currentUser]);
+
+  useEffect(() => {
+    if (publicRoutes.has(pathname)) {
+      return;
+    }
+
+    let cancelled = false;
+
+    async function loadCurrentUser() {
+      try {
+        const result = await apiFetch("/api/accounts/me/");
+        if (!cancelled) {
+          setCurrentUser(result?.user || null);
+        }
+      } catch (error) {
+        console.error(error);
+      }
+    }
+
+    loadCurrentUser();
+
+    return () => {
+      cancelled = true;
+    };
+  }, [pathname]);
+
+  async function handleLogout() {
+    try {
+      setLoggingOut(true);
+      setLogoutError("");
+      await apiFetch("/api/accounts/logout/", { method: "POST" });
+      sessionStorage.removeItem("refreshProgress");
+      sessionStorage.removeItem("lastStudiedConcept");
+      setCurrentUser(null);
+      router.push("/login");
+      router.refresh();
+    } catch (error) {
+      console.error(error);
+      setLogoutError(
+        getDisplayErrorMessage(
+          error,
+          "We could not log you out just now. Please try again."
+        )
+      );
+    } finally {
+      setLoggingOut(false);
+    }
+  }
+
+  if (publicRoutes.has(pathname)) {
+    return (
+      <div className="min-h-screen bg-[#0f0b1c]">
+        <header className="border-b border-[#d0a95b]/15 bg-[#130f24]/88 backdrop-blur">
+          <div className="mx-auto flex max-w-6xl items-center justify-between px-4 py-4 sm:px-6">
+            <Link href="/" className="text-lg font-bold tracking-tight text-[#fbf7ee]">
+              Abbot Study
+            </Link>
+
+            <nav className="flex items-center gap-2 sm:gap-3">
+              {pathname !== "/login" && (
+                <Link
+                  href="/login"
+                  className="rounded-xl border border-[#7a6332] bg-[#1a1431] px-3 py-2 text-sm font-medium text-[#f1ddb1] transition hover:bg-[#241b43]"
+                >
+                  Log in
+                </Link>
+              )}
+              {pathname !== "/signup" && (
+                <Link
+                  href="/signup"
+                  className="rounded-xl bg-[#caa04f] px-3 py-2 text-sm font-medium text-[#20183b] transition hover:bg-[#e0b86a]"
+                >
+                  Create account
+                </Link>
+              )}
+            </nav>
+          </div>
+        </header>
+
+        {children}
+      </div>
+    );
+  }
+
+  if (isTutorFocusMode) {
+    return <div className="min-h-screen bg-[#120f23]">{children}</div>;
+  }
+
+  return (
+    <div className="min-h-screen bg-[#120f23] md:flex">
+      <aside className="sticky top-0 hidden h-screen w-72 shrink-0 border-r border-[#d0a95b]/15 bg-[linear-gradient(180deg,_rgba(22,17,39,0.98)_0%,_rgba(14,10,25,0.98)_100%)] md:flex md:flex-col">
+        <div className="border-b border-[#d0a95b]/15 px-6 py-6">
+          <Link href="/" className="block text-2xl font-bold tracking-tight text-[#fbf7ee]">
+            Abbot Study
+          </Link>
+          <p className="mt-2 text-sm text-[#bfb5d5]">
+            Your adaptive study workspace.
+          </p>
+        </div>
+
+        <nav className="flex-1 space-y-2 px-4 py-6">
+          {navItems.map((item) => {
+            const active = isActivePath(pathname, item.href);
+            return (
+              <Link
+                key={item.href}
+                href={item.href}
+                className={`block rounded-2xl px-4 py-3 text-sm font-semibold transition ${
+                  active
+                    ? "bg-[#caa04f] text-[#20183b]"
+                    : "text-[#ddd4ef] hover:bg-white/8"
+                }`}
+              >
+                {item.label}
+              </Link>
+            );
+          })}
+        </nav>
+
+        <div className="border-t border-[#d0a95b]/15 px-4 py-4">
+          <button
+            type="button"
+            onClick={handleLogout}
+            disabled={loggingOut}
+            className="w-full rounded-2xl border border-[#6d5b8d] bg-[#1b1530] px-4 py-3 text-sm font-semibold text-[#f2dfb0] transition hover:bg-[#251d43] disabled:cursor-not-allowed disabled:opacity-60"
+          >
+            {loggingOut ? "Logging out..." : "Log out"}
+          </button>
+          {logoutError && (
+            <p className="mt-3 rounded-2xl border border-red-300/20 bg-red-500/10 px-4 py-3 text-sm text-red-200">
+              {logoutError}
+            </p>
+          )}
+        </div>
+      </aside>
+
+      <div className="flex min-h-screen flex-1 flex-col">
+        <header className="sticky top-0 z-20 border-b border-[#d0a95b]/15 bg-[#130f24]/92 md:hidden">
+          <div className="flex items-center justify-between gap-3 px-4 py-4">
+            <Link href="/" className="text-lg font-bold tracking-tight text-[#fbf7ee]">
+              Abbot Study
+            </Link>
+            <button
+              type="button"
+              onClick={handleLogout}
+              disabled={loggingOut}
+              className="rounded-xl border border-[#6d5b8d] bg-[#1b1530] px-3 py-2 text-sm font-semibold text-[#f2dfb0] transition hover:bg-[#251d43] disabled:cursor-not-allowed disabled:opacity-60"
+            >
+              {loggingOut ? "Logging out..." : "Log out"}
+            </button>
+          </div>
+
+          <nav className="flex gap-2 overflow-x-auto px-4 pb-4">
+            {navItems.map((item) => {
+              const active = isActivePath(pathname, item.href);
+              return (
+                <Link
+                  key={item.href}
+                href={item.href}
+                className={`shrink-0 rounded-full px-4 py-2 text-sm font-semibold transition ${
+                  active
+                    ? "bg-[#caa04f] text-[#20183b]"
+                    : "bg-white/8 text-[#ddd4ef]"
+                }`}
+              >
+                {item.label}
+                </Link>
+              );
+            })}
+          </nav>
+
+          {logoutError && (
+            <div className="px-4 pb-4">
+              <p className="rounded-2xl border border-red-300/20 bg-red-500/10 px-4 py-3 text-sm text-red-200">
+                {logoutError}
+              </p>
+            </div>
+          )}
+        </header>
+
+        <div className="flex-1">{children}</div>
+      </div>
+    </div>
+  );
+}
+
+export default function AppShell({ children }: { children: ReactNode }) {
+  return (
+    <Suspense fallback={<div className="min-h-screen bg-[#120f23]">{children}</div>}>
+      <AppShellContent>{children}</AppShellContent>
+    </Suspense>
+  );
+}
