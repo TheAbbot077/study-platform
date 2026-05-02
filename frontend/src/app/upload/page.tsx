@@ -55,6 +55,8 @@ type RebuildResult = {
   }>;
 };
 
+type ProcessingStage = "uploaded" | "processing" | "ready" | "failed";
+
 function StatusBadge({ status }: { status: string }) {
   let classes =
     "inline-flex rounded-full px-3 py-1 text-xs font-semibold ";
@@ -80,6 +82,107 @@ function getFailureMessage(doc: DocumentListItem) {
   }
 
   return "Processing failed for this document. Try re-uploading a text-based PDF.";
+}
+
+function getProcessingProgress(status: ProcessingStage) {
+  if (status === "uploaded") {
+    return 18;
+  }
+  if (status === "processing") {
+    return 68;
+  }
+  return 100;
+}
+
+function ProcessingProgressCard({
+  documents,
+}: {
+  documents: DocumentListItem[];
+}) {
+  const processingDocuments = documents.filter(
+    (doc) => doc.status === "uploaded" || doc.status === "processing"
+  );
+
+  if (processingDocuments.length === 0) {
+    return null;
+  }
+
+  const averageProgress = Math.max(
+    12,
+    Math.round(
+      processingDocuments.reduce(
+        (sum, doc) => sum + getProcessingProgress(doc.status as ProcessingStage),
+        0
+      ) / processingDocuments.length
+    )
+  );
+
+  return (
+    <div className="rounded-[2rem] border border-amber-300/20 bg-[linear-gradient(180deg,_rgba(58,42,17,0.92)_0%,_rgba(33,25,12,0.97)_100%)] p-6 shadow-[0_20px_60px_rgba(0,0,0,0.28)]">
+      <div className="flex flex-col gap-4 sm:flex-row sm:items-start sm:justify-between">
+        <div>
+          <p className="text-xs font-semibold uppercase tracking-[0.18em] text-[#e1bd73]">
+            Processing in progress
+          </p>
+          <h2 className="mt-2 text-xl font-semibold text-[#fbf7ee]">
+            Document is being processed, please be patient as this may take a while.
+          </h2>
+          <p className="mt-2 text-sm leading-6 text-[#d4cae4]">
+            Large books can take longer while Abbot Study extracts text, builds sections,
+            creates embeddings, and prepares the syllabus for tutoring.
+          </p>
+        </div>
+
+        <div className="rounded-2xl border border-white/10 bg-white/10 px-4 py-3 text-center">
+          <p className="text-2xl font-semibold text-[#f7e2a7]">{averageProgress}%</p>
+          <p className="mt-1 text-xs uppercase tracking-[0.16em] text-[#d6cde8]">
+            Estimated progress
+          </p>
+        </div>
+      </div>
+
+      <div className="mt-5 h-4 overflow-hidden rounded-full bg-white/10">
+        <div
+          className="relative h-full rounded-full bg-[linear-gradient(90deg,_#d09d43_0%,_#f0d79a_45%,_#d09d43_100%)] transition-all duration-700"
+          style={{ width: `${averageProgress}%` }}
+        >
+          <div className="absolute inset-0 animate-pulse bg-white/20" />
+        </div>
+      </div>
+
+      <div className="mt-5 space-y-3">
+        {processingDocuments.map((doc) => {
+          const progress = getProcessingProgress(doc.status as ProcessingStage);
+
+          return (
+            <div
+              key={doc.id}
+              className="rounded-2xl border border-white/10 bg-white/[0.08] px-4 py-4"
+            >
+              <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
+                <div>
+                  <p className="text-sm font-semibold text-[#fbf7ee]">{doc.title}</p>
+                  <p className="mt-1 text-xs text-[#cfc6e1]">
+                    {doc.status === "uploaded"
+                      ? "Queued for worker pickup."
+                      : "Currently being processed by the background worker."}
+                  </p>
+                </div>
+                <StatusBadge status={doc.status} />
+              </div>
+
+              <div className="mt-3 h-2 overflow-hidden rounded-full bg-white/10">
+                <div
+                  className="h-full rounded-full bg-[linear-gradient(90deg,_#9dd5f3_0%,_#d09d43_100%)] transition-all duration-700"
+                  style={{ width: `${progress}%` }}
+                />
+              </div>
+            </div>
+          );
+        })}
+      </div>
+    </div>
+  );
 }
 
 function UploadPageContent() {
@@ -463,6 +566,7 @@ function UploadPageContent() {
           </section>
 
           <section className="space-y-6">
+        <ProcessingProgressCard documents={documents} />
 
         {uploadedDocuments.length > 0 && (
           <div className="rounded-[2rem] border border-sky-300/20 bg-[linear-gradient(180deg,_rgba(26,54,87,0.92)_0%,_rgba(17,36,59,0.94)_100%)] p-6 shadow-[0_20px_60px_rgba(0,0,0,0.28)]">
@@ -554,15 +658,31 @@ function UploadPageContent() {
                   </div>
 
                   {doc.status === "processing" && (
-                    <p className="mt-3 text-sm text-amber-200">
-                      Your document is currently being chunked and embedded in the background.
-                    </p>
+                    <div className="mt-3 rounded-2xl border border-amber-300/20 bg-amber-500/10 p-4">
+                      <p className="text-sm font-semibold text-amber-100">
+                        Document is being processed, please be patient as this may take a while.
+                      </p>
+                      <p className="mt-1 text-sm text-amber-200">
+                        Your document is currently being chunked, embedded, and prepared for syllabus extraction.
+                      </p>
+                      <div className="mt-3 h-2 overflow-hidden rounded-full bg-white/10">
+                        <div className="h-full w-[68%] rounded-full bg-[linear-gradient(90deg,_#d09d43_0%,_#f0d79a_100%)] animate-pulse" />
+                      </div>
+                    </div>
                   )}
 
                   {doc.status === "uploaded" && (
-                    <p className="mt-3 text-sm text-sky-200">
-                      Upload complete. Processing should begin shortly.
-                    </p>
+                    <div className="mt-3 rounded-2xl border border-sky-300/20 bg-sky-500/10 p-4">
+                      <p className="text-sm font-semibold text-sky-100">
+                        Document is being processed, please be patient as this may take a while.
+                      </p>
+                      <p className="mt-1 text-sm text-sky-200">
+                        Upload complete. The background worker should begin processing shortly.
+                      </p>
+                      <div className="mt-3 h-2 overflow-hidden rounded-full bg-white/10">
+                        <div className="h-full w-[18%] rounded-full bg-[linear-gradient(90deg,_#78c5ff_0%,_#d09d43_100%)] animate-pulse" />
+                      </div>
+                    </div>
                   )}
 
                   {doc.status === "ready" && (
