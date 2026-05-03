@@ -48,6 +48,7 @@ class ReinforcementPlanAPIView(APIView):
         return Response(
             {
                 "next_target": safe_next_target,
+                "recommended_concepts": safe_items,
                 "plan": {
                     "count": len(safe_items),
                     "items": safe_items,
