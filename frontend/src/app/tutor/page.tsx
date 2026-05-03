@@ -838,24 +838,26 @@ function TutorPageContent() {
 
   return (
     <main
-      className={`relative min-h-screen overflow-hidden text-[#f9f4e8] ${
+      className={`relative min-h-screen overflow-hidden ${
         isFocusMode
-          ? "bg-[#120f23] px-0 py-0"
-          : "bg-[#120f23] px-4 py-4 sm:p-6"
+          ? "bg-[#17122a] px-0 py-0 text-[#f9f4e8]"
+          : "bg-[#f6f1e6] px-4 py-4 text-[#2b2140] sm:p-6"
       }`}
     >
-      <div className="absolute inset-0 bg-[radial-gradient(circle_at_top_left,_rgba(214,169,78,0.14),_transparent_24%),radial-gradient(circle_at_bottom_right,_rgba(82,59,142,0.24),_transparent_34%)]" />
-      <div className="absolute inset-0 opacity-20 [background-image:linear-gradient(rgba(255,255,255,0.04)_1px,transparent_1px),linear-gradient(90deg,rgba(255,255,255,0.04)_1px,transparent_1px)] [background-size:42px_42px]" />
+      <div className="absolute inset-0 bg-[radial-gradient(circle_at_top_left,_rgba(214,169,78,0.18),_transparent_24%),radial-gradient(circle_at_bottom_right,_rgba(82,59,142,0.16),_transparent_34%)]" />
+      <div className="absolute inset-0 opacity-20 [background-image:linear-gradient(rgba(53,41,83,0.05)_1px,transparent_1px),linear-gradient(90deg,rgba(53,41,83,0.05)_1px,transparent_1px)] [background-size:42px_42px]" />
       <div className={`mx-auto ${isFocusMode ? "max-w-none" : "max-w-7xl space-y-6"}`}>
         <div
-          className={`sticky z-20 flex flex-col gap-4 border border-[#d0a95b]/20 bg-[#18132d]/90 backdrop-blur-sm ${
+          className={`sticky z-20 flex flex-col gap-4 border backdrop-blur-sm ${
             isFocusMode
-              ? "top-0 border-x-0 border-t-0 border-b-[#d0a95b]/20 px-4 py-4 shadow-[0_24px_70px_rgba(0,0,0,0.28)] sm:px-6"
-              : "top-[7.75rem] rounded-[1.8rem] px-4 py-4 shadow-[0_24px_70px_rgba(0,0,0,0.28)] md:top-4 md:mx-auto sm:px-6"
+              ? "top-0 border-x-0 border-t-0 border-b-[#d0a95b]/20 bg-[#18132d]/92 px-4 py-4 shadow-[0_24px_70px_rgba(0,0,0,0.28)] sm:px-6"
+              : "top-[7.4rem] rounded-[1.8rem] border-[#d7c49b] bg-[rgba(255,250,241,0.94)] px-4 py-4 shadow-[0_24px_70px_rgba(46,30,80,0.16)] md:top-4 md:mx-auto sm:px-6"
           }`}
         >
           <div className="min-w-0">
-            <h1 className={`${isFocusMode ? "text-2xl" : "text-3xl"} font-bold text-[#fbf7ee]`}>
+            <h1
+              className={`${isFocusMode ? "text-2xl text-[#fbf7ee]" : "text-3xl text-[#251a3e]"} font-bold`}
+            >
               Abbot Study Tutor
             </h1>
             <div className="mt-3 flex flex-wrap gap-2">
@@ -863,22 +865,36 @@ function TutorPageContent() {
                 <Link
                   key={item.href}
                   href={item.href}
-                  className="rounded-full border border-white/10 bg-white/[0.06] px-3 py-1.5 text-center text-[11px] font-semibold uppercase tracking-[0.16em] text-[#e7d5a0] transition hover:bg-white/[0.1] sm:text-xs"
+                  className={`rounded-full px-3 py-1.5 text-center text-[11px] font-semibold uppercase tracking-[0.16em] transition sm:text-xs ${
+                    isFocusMode
+                      ? "border border-white/10 bg-white/[0.06] text-[#e7d5a0] hover:bg-white/[0.1]"
+                      : "border border-[#d9c49b] bg-white/90 text-[#6d5424] hover:bg-[#fff7e7]"
+                  }`}
                 >
                   {item.label}
                 </Link>
               ))}
             </div>
             {!isFocusMode && (
-              <p className="mt-2 text-[#c8bfd9]">
+              <p className="mt-2 text-[#67557f]">
                 Ask questions, get adaptive guidance, and build mastery.
               </p>
             )}
           </div>
 
           <div className="grid w-full gap-3 sm:grid-cols-2 xl:flex xl:w-auto xl:flex-wrap xl:justify-end xl:items-center">
-            <div className="flex items-center justify-between gap-2 rounded-2xl border border-[#d0a95b]/20 bg-white/[0.05] px-3 py-2 sm:col-span-2 xl:col-span-1 xl:min-w-[10.5rem]">
-              <span className="text-xs font-semibold uppercase tracking-[0.16em] text-[#d9bb74]">
+            <div
+              className={`flex items-center justify-between gap-2 rounded-2xl border px-3 py-2 sm:col-span-2 xl:col-span-1 xl:min-w-[10.5rem] ${
+                isFocusMode
+                  ? "border-[#d0a95b]/20 bg-white/[0.05]"
+                  : "border-[#dccaa3] bg-[#fffdf8]"
+              }`}
+            >
+              <span
+                className={`text-xs font-semibold uppercase tracking-[0.16em] ${
+                  isFocusMode ? "text-[#d9bb74]" : "text-[#8b6d2a]"
+                }`}
+              >
                 Zoom
               </span>
               <div className="flex items-center gap-2">
@@ -895,11 +911,19 @@ function TutorPageContent() {
                     )
                   }
                   disabled={pageZoom === TUTOR_PAGE_ZOOM_OPTIONS[0]}
-                  className="rounded-xl border border-[#6d5b8d]/45 bg-[#231a3d] px-2.5 py-1 text-sm font-semibold text-[#f7e7bf] transition hover:border-[#d0a95b]/40 hover:bg-[#2b2148] disabled:cursor-not-allowed disabled:opacity-50"
+                  className={`rounded-xl border px-2.5 py-1 text-sm font-semibold transition disabled:cursor-not-allowed disabled:opacity-50 ${
+                    isFocusMode
+                      ? "border-[#6d5b8d]/45 bg-[#231a3d] text-[#f7e7bf] hover:border-[#d0a95b]/40 hover:bg-[#2b2148]"
+                      : "border-[#d7c49b] bg-white text-[#3b295e] hover:border-[#caa04f] hover:bg-[#fff5de]"
+                  }`}
                 >
                   -
                 </button>
-                <span className="min-w-[3.5rem] text-center text-sm font-semibold text-[#fbf7ee]">
+                <span
+                  className={`min-w-[3.5rem] text-center text-sm font-semibold ${
+                    isFocusMode ? "text-[#fbf7ee]" : "text-[#2e2147]"
+                  }`}
+                >
                   {pageZoom}%
                 </span>
                 <button
@@ -918,7 +942,11 @@ function TutorPageContent() {
                     pageZoom ===
                     TUTOR_PAGE_ZOOM_OPTIONS[TUTOR_PAGE_ZOOM_OPTIONS.length - 1]
                   }
-                  className="rounded-xl border border-[#6d5b8d]/45 bg-[#231a3d] px-2.5 py-1 text-sm font-semibold text-[#f7e7bf] transition hover:border-[#d0a95b]/40 hover:bg-[#2b2148] disabled:cursor-not-allowed disabled:opacity-50"
+                  className={`rounded-xl border px-2.5 py-1 text-sm font-semibold transition disabled:cursor-not-allowed disabled:opacity-50 ${
+                    isFocusMode
+                      ? "border-[#6d5b8d]/45 bg-[#231a3d] text-[#f7e7bf] hover:border-[#d0a95b]/40 hover:bg-[#2b2148]"
+                      : "border-[#d7c49b] bg-white text-[#3b295e] hover:border-[#caa04f] hover:bg-[#fff5de]"
+                  }`}
                 >
                   +
                 </button>
@@ -927,7 +955,11 @@ function TutorPageContent() {
             <button
               type="button"
               onClick={() => router.push(isFocusMode ? standardModeUrl : focusModeUrl)}
-              className="w-full rounded-2xl border border-[#6d5b8d]/45 bg-[#1f1836] px-4 py-2 text-sm font-medium text-[#f0ddb0] transition hover:border-[#d0a95b]/35 hover:bg-[#2a2045]"
+              className={`w-full rounded-2xl border px-4 py-2 text-sm font-medium transition ${
+                isFocusMode
+                  ? "border-[#6d5b8d]/45 bg-[#1f1836] text-[#f0ddb0] hover:border-[#d0a95b]/35 hover:bg-[#2a2045]"
+                  : "border-[#d7c49b] bg-white text-[#3a285d] hover:border-[#caa04f] hover:bg-[#fff7e8]"
+              }`}
             >
               {isFocusMode ? "Exit full screen" : "Full screen"}
             </button>
@@ -942,7 +974,11 @@ function TutorPageContent() {
               type="button"
               onClick={handleRestartConcept}
               disabled={restartingConcept || !(focusedConcept || selectedConcept)}
-              className="w-full rounded-2xl border border-amber-300/20 bg-amber-500/10 px-4 py-2 text-sm font-medium text-amber-100 transition hover:bg-amber-500/20 disabled:cursor-not-allowed disabled:opacity-60"
+              className={`w-full rounded-2xl border px-4 py-2 text-sm font-medium transition disabled:cursor-not-allowed disabled:opacity-60 ${
+                isFocusMode
+                  ? "border-amber-300/20 bg-amber-500/10 text-amber-100 hover:bg-amber-500/20"
+                  : "border-[#e5cb92] bg-[#fff6e3] text-[#7c5a15] hover:bg-[#fff0cf]"
+              }`}
             >
               {restartingConcept ? "Restarting..." : "Restart concept"}
             </button>
@@ -950,7 +986,11 @@ function TutorPageContent() {
               type="button"
               onClick={handleLogout}
               disabled={loggingOut}
-              className="w-full rounded-2xl border border-[#6d5b8d]/45 bg-[#1f1836] px-4 py-2 text-sm font-medium text-[#f0ddb0] transition hover:border-[#d0a95b]/35 hover:bg-[#2a2045] disabled:cursor-not-allowed disabled:opacity-60"
+              className={`w-full rounded-2xl border px-4 py-2 text-sm font-medium transition disabled:cursor-not-allowed disabled:opacity-60 ${
+                isFocusMode
+                  ? "border-[#6d5b8d]/45 bg-[#1f1836] text-[#f0ddb0] hover:border-[#d0a95b]/35 hover:bg-[#2a2045]"
+                  : "border-[#d7c49b] bg-white text-[#3a285d] hover:border-[#caa04f] hover:bg-[#fff7e8]"
+              }`}
             >
               {loggingOut ? "Logging out..." : "Log out"}
             </button>
@@ -979,14 +1019,14 @@ function TutorPageContent() {
                 : "lg:sticky lg:top-6 lg:self-start lg:max-h-[calc(100vh-3rem)] lg:overflow-y-auto lg:pr-2"
             }`}
           >
-            <div className="rounded-[1.8rem] border border-[#d0a95b]/20 bg-[#18132d]/92 p-5 shadow-[0_20px_60px_rgba(0,0,0,0.28)] backdrop-blur-sm">
-              <label className="mb-2 block text-sm font-medium text-[#dbc580]">
+            <div className="rounded-[1.8rem] border border-[#ddd0b4] bg-[rgba(255,251,244,0.96)] p-5 shadow-[0_20px_60px_rgba(57,39,101,0.12)] backdrop-blur-sm">
+              <label className="mb-2 block text-sm font-medium text-[#7f6321]">
                 Subject
               </label>
               <select
                 value={selectedSubjectId}
                 onChange={(e) => handleSubjectChange(e.target.value)}
-                className="w-full rounded-2xl border border-[#6d5b8d]/45 bg-[#221a3b] px-4 py-3 text-sm text-[#fbf7ee] outline-none focus:border-[#d0a95b]/45"
+                className="w-full rounded-2xl border border-[#d8c7a3] bg-white px-4 py-3 text-sm text-[#2d2143] outline-none focus:border-[#caa04f]"
               >
                 <option value="">
                   {loadingSubjects ? "Loading subjects..." : "Select a subject"}
@@ -999,34 +1039,34 @@ function TutorPageContent() {
               </select>
 
               {selectedSubjectName && (
-                <div className="mt-4 rounded-2xl border border-[#d0a95b]/20 bg-[linear-gradient(180deg,_rgba(60,46,95,0.8)_0%,_rgba(30,23,51,0.95)_100%)] p-4">
-                  <p className="text-sm text-[#d8b66d]">Selected subject</p>
-                  <p className="mt-1 text-base font-semibold text-[#fbf7ee]">
+                <div className="mt-4 rounded-2xl border border-[#e0cfac] bg-[linear-gradient(180deg,_rgba(255,249,237,0.96)_0%,_rgba(246,238,220,0.96)_100%)] p-4">
+                  <p className="text-sm text-[#8a6f2f]">Selected subject</p>
+                  <p className="mt-1 text-base font-semibold text-[#2e2147]">
                     {selectedSubjectName}
                   </p>
                 </div>
               )}
             </div>
 
-            <div className="rounded-[1.8rem] border border-[#d0a95b]/20 bg-[#18132d]/92 p-5 shadow-[0_20px_60px_rgba(0,0,0,0.28)] backdrop-blur-sm">
+            <div className="rounded-[1.8rem] border border-[#ddd0b4] bg-[rgba(255,251,244,0.96)] p-5 shadow-[0_20px_60px_rgba(57,39,101,0.12)] backdrop-blur-sm">
               <div className="flex items-center justify-between gap-3">
                 <div>
-                  <h2 className="text-lg font-semibold text-[#fbf7ee]">Subject Topics</h2>
-                  <p className="mt-1 text-sm text-[#c8bfd9]">
+                  <h2 className="text-lg font-semibold text-[#2d2143]">Subject Topics</h2>
+                  <p className="mt-1 text-sm text-[#6b5b80]">
                     Learn chapter by chapter, then move through concepts and subtopics in order.
                   </p>
                 </div>
-                <span className="rounded-full border border-white/10 bg-white/8 px-3 py-1 text-xs font-medium text-[#e7d09b]">
+                <span className="rounded-full border border-[#e2d2ad] bg-[#fff8ea] px-3 py-1 text-xs font-medium text-[#7a6020]">
                   {topicTree.length} chapters
                 </span>
               </div>
 
               {!selectedSubjectId ? (
-                <p className="mt-4 rounded-2xl border border-white/8 bg-white/[0.05] p-4 text-sm text-[#c8bfd9]">
+                <p className="mt-4 rounded-2xl border border-[#eadfc8] bg-[#fffdfa] p-4 text-sm text-[#6b5b80]">
                   Choose a subject to see its extracted topics.
                 </p>
               ) : loadingTopics ? (
-                <p className="mt-4 rounded-2xl border border-white/8 bg-white/[0.05] p-4 text-sm text-[#c8bfd9]">
+                <p className="mt-4 rounded-2xl border border-[#eadfc8] bg-[#fffdfa] p-4 text-sm text-[#6b5b80]">
                   Loading extracted topics...
                 </p>
               ) : topicsError ? (
@@ -1052,7 +1092,11 @@ function TutorPageContent() {
           >
             <div className={`mx-auto w-full ${paperWidthClass}`}>
               <div
-                className="rounded-[30px] border border-[#d0a95b]/18 bg-[linear-gradient(180deg,_rgba(24,19,45,0.96)_0%,_rgba(17,13,34,0.98)_100%)] p-5 shadow-[0_28px_90px_rgba(0,0,0,0.35)] sm:p-8"
+                className={`rounded-[30px] border p-5 shadow-[0_28px_90px_rgba(53,37,92,0.18)] sm:p-8 ${
+                  isFocusMode
+                    ? "border-[#d0a95b]/18 bg-[linear-gradient(180deg,_rgba(24,19,45,0.96)_0%,_rgba(17,13,34,0.98)_100%)]"
+                    : "border-[#e3d5bc] bg-[linear-gradient(180deg,_rgba(255,251,244,0.98)_0%,_rgba(247,240,226,0.98)_100%)]"
+                }`}
                 style={{ fontSize: `${pageZoom}%` }}
               >
                 <div className="space-y-6">
@@ -1063,9 +1107,21 @@ function TutorPageContent() {
                   )}
 
                   {focusedConcept && (
-                    <div className="rounded-2xl border border-[#6d5b8d]/35 bg-[#251d40]/92 p-4">
-                      <p className="text-sm text-[#d8b66d]">Currently studying</p>
-                      <p className="mt-1 text-lg font-semibold text-[#fbf7ee]">
+                    <div
+                      className={`rounded-2xl border p-4 ${
+                        isFocusMode
+                          ? "border-[#6d5b8d]/35 bg-[#251d40]/92"
+                          : "border-[#e1d3b8] bg-white/92"
+                      }`}
+                    >
+                      <p className={`text-sm ${isFocusMode ? "text-[#d8b66d]" : "text-[#896d2d]"}`}>
+                        Currently studying
+                      </p>
+                      <p
+                        className={`mt-1 text-lg font-semibold ${
+                          isFocusMode ? "text-[#fbf7ee]" : "text-[#2d2143]"
+                        }`}
+                      >
                         {focusedConcept}
                       </p>
                     </div>
@@ -1131,18 +1187,34 @@ function TutorPageContent() {
                   )}
 
                   {focusedConcept && (
-                    <div className="rounded-2xl border border-white/10 bg-white/[0.04] p-5 shadow-[0_18px_48px_rgba(0,0,0,0.18)] backdrop-blur-sm">
+                    <div
+                      className={`rounded-2xl border p-5 shadow-[0_18px_48px_rgba(53,37,92,0.12)] backdrop-blur-sm ${
+                        isFocusMode
+                          ? "border-white/10 bg-white/[0.04]"
+                          : "border-[#e5d9c3] bg-[rgba(255,252,246,0.94)]"
+                      }`}
+                    >
                       <div className="flex flex-col gap-3 sm:flex-row sm:items-start sm:justify-between">
                         <div>
-                          <h2 className="text-xl font-semibold text-[#fbf7ee]">
+                          <h2
+                            className={`text-xl font-semibold ${
+                              isFocusMode ? "text-[#fbf7ee]" : "text-[#2d2143]"
+                            }`}
+                          >
                             Conversation history
                           </h2>
-                          <p className="mt-1 text-sm text-[#c8bfd9]">
+                          <p className={`mt-1 text-sm ${isFocusMode ? "text-[#c8bfd9]" : "text-[#6b5b80]"}`}>
                             Pick up this concept exactly where you left off.
                           </p>
                         </div>
                         {loadingHistory && (
-                          <span className="rounded-full border border-white/10 bg-white/10 px-3 py-1 text-xs font-medium text-[#e7d09b]">
+                          <span
+                            className={`rounded-full border px-3 py-1 text-xs font-medium ${
+                              isFocusMode
+                                ? "border-white/10 bg-white/10 text-[#e7d09b]"
+                                : "border-[#e5d5b4] bg-[#fff6e5] text-[#7a6020]"
+                            }`}
+                          >
                             Loading...
                           </span>
                         )}
@@ -1170,7 +1242,13 @@ function TutorPageContent() {
                           {historyError}
                         </p>
                       ) : conversationHistory.length === 0 ? (
-                        <p className="mt-4 rounded-2xl border border-white/8 bg-white/[0.04] p-4 text-sm text-[#c8bfd9]">
+                        <p
+                          className={`mt-4 rounded-2xl border p-4 text-sm ${
+                            isFocusMode
+                              ? "border-white/8 bg-white/[0.04] text-[#c8bfd9]"
+                              : "border-[#eadfc8] bg-[#fffdfa] text-[#6b5b80]"
+                          }`}
+                        >
                           No saved conversation for this concept yet. Start asking and the
                           thread will build here.
                         </p>
@@ -1192,8 +1270,20 @@ function TutorPageContent() {
                   )}
 
                   {answer && !focusedConcept && (
-                    <div className="rounded-2xl border border-white/10 bg-white/[0.04] p-5 shadow-[0_18px_48px_rgba(0,0,0,0.18)] backdrop-blur-sm">
-                      <h2 className="text-xl font-semibold text-[#fbf7ee]">Tutor response</h2>
+                    <div
+                      className={`rounded-2xl border p-5 shadow-[0_18px_48px_rgba(53,37,92,0.12)] backdrop-blur-sm ${
+                        isFocusMode
+                          ? "border-white/10 bg-white/[0.04]"
+                          : "border-[#e5d9c3] bg-[rgba(255,252,246,0.94)]"
+                      }`}
+                    >
+                      <h2
+                        className={`text-xl font-semibold ${
+                          isFocusMode ? "text-[#fbf7ee]" : "text-[#2d2143]"
+                        }`}
+                      >
+                        Tutor response
+                      </h2>
                       <div className="mt-4">
                         <TutorAnswer answer={answer} />
                       </div>
@@ -1204,10 +1294,10 @@ function TutorPageContent() {
             </div>
 
             <div
-              className={`sticky bottom-0 z-10 border border-[#d0a95b]/18 bg-[#18132d]/94 shadow-[0_24px_80px_rgba(0,0,0,0.35)] backdrop-blur-md ${
+              className={`sticky bottom-0 z-10 border shadow-[0_24px_80px_rgba(53,37,92,0.18)] backdrop-blur-md ${
                 isFocusMode
-                  ? "mx-auto w-full max-w-[620px] rounded-2xl p-2.5 sm:bottom-3"
-                  : "-mx-4 rounded-t-2xl p-4 sm:bottom-4 sm:mx-0 sm:rounded-2xl sm:p-5"
+                  ? "mx-auto w-full max-w-[620px] rounded-2xl border-[#d0a95b]/18 bg-[#18132d]/94 p-2.5 sm:bottom-3"
+                  : "-mx-4 rounded-t-2xl border-[#ddd0b4] bg-[rgba(255,251,245,0.96)] p-4 sm:bottom-4 sm:mx-0 sm:rounded-2xl sm:p-5"
               }`}
             >
               {shouldShowAdvanceButton && (
@@ -1250,8 +1340,8 @@ function TutorPageContent() {
               {shouldShowComposer && (
                 <>
               <label
-                className={`block font-medium text-[#dbc580] ${
-                  isFocusMode ? "mb-1 text-xs" : "mb-2 text-sm"
+                className={`block font-medium ${
+                  isFocusMode ? "mb-1 text-xs text-[#dbc580]" : "mb-2 text-sm text-[#7f6321]"
                 }`}
               >
                 Message
@@ -1265,11 +1355,11 @@ function TutorPageContent() {
                     : "Type your question or answer here..."
                 }
                 rows={isFocusMode ? 2 : 4}
-                className={`w-full rounded-2xl border border-[#6d5b8d]/45 bg-[#221a3b] text-[#fbf7ee] outline-none placeholder:text-[#9488ad] focus:border-[#d0a95b]/45 ${
+                className={`w-full rounded-2xl border outline-none ${
                   isFocusMode
-                    ? "min-h-[72px] px-3 py-2 text-xs"
-                    : "px-4 py-3 text-sm"
-                }`}
+                    ? "border-[#6d5b8d]/45 bg-[#221a3b] text-[#fbf7ee] placeholder:text-[#9488ad] focus:border-[#d0a95b]/45"
+                    : "border-[#d8c7a3] bg-white text-[#2d2143] placeholder:text-[#8c7b9f] focus:border-[#caa04f]"
+                } ${isFocusMode ? "min-h-[72px] px-3 py-2 text-xs" : "px-4 py-3 text-sm"}`}
               />
 
               <div
@@ -1314,7 +1404,7 @@ function TutorPageContent() {
 
 export default function TutorPage() {
   return (
-    <Suspense fallback={<div className="min-h-screen bg-[#120f23]" />}>
+    <Suspense fallback={<div className="min-h-screen bg-[#f6f1e6]" />}>
       <TutorPageContent />
     </Suspense>
   );
