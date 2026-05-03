@@ -98,15 +98,20 @@ function AppShellContent({ children }: { children: ReactNode }) {
           <div className="mx-auto flex max-w-6xl items-center justify-between px-4 py-4 sm:px-6">
             <Link
               href="/"
-              className="relative block h-12 w-[11rem] overflow-hidden rounded-2xl border border-[#d7c49b] bg-white/90 shadow-[0_10px_30px_rgba(17,37,83,0.08)]"
+              className="flex items-center gap-3"
             >
-              <Image
-                src="/abbot-study-logo.jpg"
-                alt="Abbot Study logo"
-                fill
-                className="object-contain p-1.5"
-                sizes="176px"
-              />
+              <span className="relative block h-12 w-20 overflow-hidden rounded-2xl border border-[#d7c49b] bg-white/90 shadow-[0_10px_30px_rgba(17,37,83,0.08)]">
+                <Image
+                  src="/abbot-study-logo.jpg"
+                  alt="Abbot Study logo"
+                  fill
+                  className="object-contain p-1.5"
+                  sizes="80px"
+                />
+              </span>
+              <span className="text-lg font-bold tracking-tight text-[#162a5f]">
+                Abbot Study
+              </span>
             </Link>
 
             <nav className="flex items-center gap-2 sm:gap-3">
@@ -145,15 +150,25 @@ function AppShellContent({ children }: { children: ReactNode }) {
         <div className="border-b border-[#d0a95b]/15 px-6 py-6">
           <Link
             href="/"
-            className="relative block h-20 w-full overflow-hidden rounded-[1.6rem] border border-white/10 bg-white/92 shadow-[0_20px_45px_rgba(0,0,0,0.18)]"
+            className="flex items-center gap-4 rounded-[1.6rem] border border-white/10 bg-white/92 px-4 py-3 shadow-[0_20px_45px_rgba(0,0,0,0.18)]"
           >
-            <Image
-              src="/abbot-study-logo.jpg"
-              alt="Abbot Study logo"
-              fill
-              className="object-contain p-3"
-              sizes="240px"
-            />
+            <span className="relative block h-14 w-20 shrink-0 overflow-hidden rounded-2xl bg-white">
+              <Image
+                src="/abbot-study-logo.jpg"
+                alt="Abbot Study logo"
+                fill
+                className="object-contain p-1.5"
+                sizes="80px"
+              />
+            </span>
+            <span className="min-w-0">
+              <span className="block text-xl font-bold tracking-tight text-[#162a5f]">
+                Abbot Study
+              </span>
+              <span className="block text-xs uppercase tracking-[0.22em] text-[#8c7334]">
+                Guided learning
+              </span>
+            </span>
           </Link>
           <p className="mt-2 text-sm text-[#bfb5d5]">
             Your adaptive study workspace.
@@ -201,15 +216,20 @@ function AppShellContent({ children }: { children: ReactNode }) {
           <div className="flex items-center justify-between gap-3 px-4 py-4">
             <Link
               href="/"
-              className="relative block h-12 w-[10.5rem] overflow-hidden rounded-2xl border border-[#d7c49b] bg-white/90 shadow-[0_10px_30px_rgba(17,37,83,0.08)]"
+              className="flex items-center gap-3"
             >
-              <Image
-                src="/abbot-study-logo.jpg"
-                alt="Abbot Study logo"
-                fill
-                className="object-contain p-1.5"
-                sizes="168px"
-              />
+              <span className="relative block h-12 w-20 overflow-hidden rounded-2xl border border-[#d7c49b] bg-white/90 shadow-[0_10px_30px_rgba(17,37,83,0.08)]">
+                <Image
+                  src="/abbot-study-logo.jpg"
+                  alt="Abbot Study logo"
+                  fill
+                  className="object-contain p-1.5"
+                  sizes="80px"
+                />
+              </span>
+              <span className="text-base font-bold tracking-tight text-[#162a5f]">
+                Abbot Study
+              </span>
             </Link>
             <button
               type="button"
