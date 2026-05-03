@@ -1,5 +1,6 @@
 "use client";
 
+import Image from "next/image";
 import Link from "next/link";
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
 import { ReactNode, Suspense, useEffect, useMemo, useState } from "react";
@@ -95,8 +96,17 @@ function AppShellContent({ children }: { children: ReactNode }) {
       <div className="min-h-screen bg-[#f6f1e6]">
         <header className="border-b border-[#d0a95b]/20 bg-[rgba(255,248,236,0.92)] backdrop-blur">
           <div className="mx-auto flex max-w-6xl items-center justify-between px-4 py-4 sm:px-6">
-            <Link href="/" className="text-lg font-bold tracking-tight text-[#fbf7ee]">
-              Abbot Study
+            <Link
+              href="/"
+              className="relative block h-12 w-[11rem] overflow-hidden rounded-2xl border border-[#d7c49b] bg-white/90 shadow-[0_10px_30px_rgba(17,37,83,0.08)]"
+            >
+              <Image
+                src="/abbot-study-logo.jpg"
+                alt="Abbot Study logo"
+                fill
+                className="object-contain p-1.5"
+                sizes="176px"
+              />
             </Link>
 
             <nav className="flex items-center gap-2 sm:gap-3">
@@ -133,8 +143,17 @@ function AppShellContent({ children }: { children: ReactNode }) {
     <div className="min-h-screen bg-[#f6f1e6]">
       <aside className="fixed inset-y-0 left-0 z-30 hidden w-72 border-r border-[#d0a95b]/20 bg-[linear-gradient(180deg,_rgba(17,37,83,0.98)_0%,_rgba(12,25,56,0.98)_100%)] md:flex md:flex-col">
         <div className="border-b border-[#d0a95b]/15 px-6 py-6">
-          <Link href="/" className="block text-2xl font-bold tracking-tight text-[#fbf7ee]">
-            Abbot Study
+          <Link
+            href="/"
+            className="relative block h-20 w-full overflow-hidden rounded-[1.6rem] border border-white/10 bg-white/92 shadow-[0_20px_45px_rgba(0,0,0,0.18)]"
+          >
+            <Image
+              src="/abbot-study-logo.jpg"
+              alt="Abbot Study logo"
+              fill
+              className="object-contain p-3"
+              sizes="240px"
+            />
           </Link>
           <p className="mt-2 text-sm text-[#bfb5d5]">
             Your adaptive study workspace.
@@ -180,8 +199,17 @@ function AppShellContent({ children }: { children: ReactNode }) {
       <div className="flex min-h-screen flex-col md:pl-72">
         <header className="fixed inset-x-0 top-0 z-30 border-b border-[#d0a95b]/20 bg-[rgba(255,248,236,0.95)] md:hidden">
           <div className="flex items-center justify-between gap-3 px-4 py-4">
-            <Link href="/" className="text-lg font-bold tracking-tight text-[#fbf7ee]">
-              Abbot Study
+            <Link
+              href="/"
+              className="relative block h-12 w-[10.5rem] overflow-hidden rounded-2xl border border-[#d7c49b] bg-white/90 shadow-[0_10px_30px_rgba(17,37,83,0.08)]"
+            >
+              <Image
+                src="/abbot-study-logo.jpg"
+                alt="Abbot Study logo"
+                fill
+                className="object-contain p-1.5"
+                sizes="168px"
+              />
             </Link>
             <button
               type="button"

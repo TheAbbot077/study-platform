@@ -29,16 +29,14 @@ export default function HomePage() {
           <div className="overflow-hidden rounded-[2.2rem] border border-white/10 bg-[#08152f]">
             <div className="flex items-center justify-between gap-4 bg-[#0f2250] px-5 py-4 sm:px-7">
               <div className="flex items-center gap-3">
-                <div className="flex h-11 w-11 items-center justify-center rounded-full border-2 border-[#d7b369] bg-[#10295d] text-xl font-black text-[#f1d188] shadow-[0_0_22px_rgba(215,179,105,0.22)]">
-                  A
-                </div>
-                <div>
-                  <p className="text-xl font-bold tracking-tight text-[#fff8e8]">
-                    Abbot Study
-                  </p>
-                  <p className="text-xs uppercase tracking-[0.22em] text-[#d6c9a3]">
-                    Guided learning
-                  </p>
+                <div className="relative h-14 w-[11.5rem] overflow-hidden rounded-2xl border border-white/10 bg-white/90 px-3 shadow-[0_0_22px_rgba(215,179,105,0.16)]">
+                  <Image
+                    src="/abbot-study-logo.jpg"
+                    alt="Abbot Study logo"
+                    fill
+                    className="object-contain p-1.5"
+                    sizes="184px"
+                  />
                 </div>
               </div>
 
