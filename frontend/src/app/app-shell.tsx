@@ -130,8 +130,8 @@ function AppShellContent({ children }: { children: ReactNode }) {
   }
 
   return (
-    <div className="min-h-screen bg-[#120f23] md:flex">
-      <aside className="sticky top-0 hidden h-screen w-72 shrink-0 border-r border-[#d0a95b]/15 bg-[linear-gradient(180deg,_rgba(22,17,39,0.98)_0%,_rgba(14,10,25,0.98)_100%)] md:flex md:flex-col">
+    <div className="min-h-screen bg-[#120f23]">
+      <aside className="fixed inset-y-0 left-0 z-30 hidden w-72 border-r border-[#d0a95b]/15 bg-[linear-gradient(180deg,_rgba(22,17,39,0.98)_0%,_rgba(14,10,25,0.98)_100%)] md:flex md:flex-col">
         <div className="border-b border-[#d0a95b]/15 px-6 py-6">
           <Link href="/" className="block text-2xl font-bold tracking-tight text-[#fbf7ee]">
             Abbot Study
@@ -177,8 +177,8 @@ function AppShellContent({ children }: { children: ReactNode }) {
         </div>
       </aside>
 
-      <div className="flex min-h-screen flex-1 flex-col">
-        <header className="sticky top-0 z-20 border-b border-[#d0a95b]/15 bg-[#130f24]/92 md:hidden">
+      <div className="flex min-h-screen flex-col md:pl-72">
+        <header className="fixed inset-x-0 top-0 z-30 border-b border-[#d0a95b]/15 bg-[#130f24]/92 md:hidden">
           <div className="flex items-center justify-between gap-3 px-4 py-4">
             <Link href="/" className="text-lg font-bold tracking-tight text-[#fbf7ee]">
               Abbot Study
@@ -221,7 +221,7 @@ function AppShellContent({ children }: { children: ReactNode }) {
           )}
         </header>
 
-        <div className="flex-1">{children}</div>
+        <div className="flex-1 pt-[7.5rem] md:pt-0">{children}</div>
       </div>
     </div>
   );
