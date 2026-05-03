@@ -389,27 +389,27 @@ function UploadPageContent() {
   }
 
   return (
-    <main className="relative min-h-screen overflow-hidden bg-[#120f23] px-4 py-8 text-[#fbf7ee] sm:px-6 sm:py-12">
-      <div className="absolute inset-0 bg-[radial-gradient(circle_at_top_left,_rgba(214,169,78,0.16),_transparent_24%),radial-gradient(circle_at_bottom_right,_rgba(82,59,142,0.28),_transparent_32%)]" />
-      <div className="absolute inset-0 opacity-25 [background-image:linear-gradient(rgba(255,255,255,0.04)_1px,transparent_1px),linear-gradient(90deg,rgba(255,255,255,0.04)_1px,transparent_1px)] [background-size:42px_42px]" />
+    <main className="relative min-h-screen overflow-hidden bg-[#f6f1e6] px-4 py-8 text-[#162a5f] sm:px-6 sm:py-12">
+      <div className="absolute inset-0 bg-[radial-gradient(circle_at_top_left,_rgba(214,169,78,0.16),_transparent_24%),radial-gradient(circle_at_bottom_right,_rgba(82,59,142,0.14),_transparent_32%)]" />
+      <div className="absolute inset-0 opacity-20 [background-image:linear-gradient(rgba(22,42,95,0.05)_1px,transparent_1px),linear-gradient(90deg,rgba(22,42,95,0.05)_1px,transparent_1px)] [background-size:42px_42px]" />
 
       <div className="relative mx-auto max-w-6xl space-y-6">
-        <section className="rounded-[2rem] border border-[#d0a95b]/20 bg-[#18132d]/90 px-6 py-8 shadow-[0_30px_90px_rgba(0,0,0,0.35)] backdrop-blur-sm">
+        <section className="rounded-[2rem] border border-[#d0a95b]/24 bg-[linear-gradient(180deg,_rgba(255,252,246,0.96)_0%,_rgba(246,239,224,0.98)_100%)] px-6 py-8 shadow-[0_30px_90px_rgba(16,34,80,0.12)] backdrop-blur-sm">
           <div className="grid gap-8 lg:grid-cols-[minmax(0,1.2fr)_minmax(320px,0.8fr)]">
             <div>
               <div className="inline-flex rounded-full border border-[#d0a95b]/35 bg-[#231a3d] px-4 py-2 text-xs font-semibold uppercase tracking-[0.2em] text-[#e5c57d]">
                 Upload Center
               </div>
-              <h1 className="mt-5 text-4xl font-semibold tracking-tight text-[#fbf7ee] sm:text-5xl">
+              <h1 className="mt-5 text-4xl font-semibold tracking-tight text-[#162a5f] sm:text-5xl">
                 Add materials to a subject and let Abbot Study prepare the learning path.
               </h1>
-              <p className="mt-5 max-w-3xl text-sm leading-7 text-[#cbc2df] sm:text-base">
+              <p className="mt-5 max-w-3xl text-sm leading-7 text-[#5f6d87] sm:text-base">
                 Upload one or many files, attach them to the right subject, and rebuild
                 the syllabus whenever you want the latest extraction and sequencing logic.
               </p>
             </div>
 
-            <div className="rounded-[1.75rem] border border-[#d0a95b]/20 bg-[linear-gradient(180deg,_rgba(36,27,61,0.95)_0%,_rgba(23,18,41,0.95)_100%)] p-6">
+            <div className="rounded-[1.75rem] border border-[#d0a95b]/20 bg-[linear-gradient(180deg,_rgba(23,41,92,0.96)_0%,_rgba(17,31,72,0.98)_100%)] p-6">
               <p className="text-xs font-semibold uppercase tracking-[0.18em] text-[#d8b66d]">
                 Upload flow
               </p>
@@ -432,16 +432,16 @@ function UploadPageContent() {
         </section>
 
         <div className="grid gap-6 xl:grid-cols-[minmax(0,1.3fr)_minmax(0,1fr)]">
-          <section className="rounded-[2rem] border border-[#d0a95b]/20 bg-[#19142d]/92 p-8 shadow-[0_24px_70px_rgba(0,0,0,0.3)] backdrop-blur-sm">
+          <section className="rounded-[2rem] border border-[#d0a95b]/24 bg-white/90 p-8 shadow-[0_24px_70px_rgba(16,34,80,0.12)] backdrop-blur-sm">
             <form onSubmit={handleSubmit} className="space-y-5">
               <div>
                 <p className="text-xs font-semibold uppercase tracking-[0.18em] text-[#ddb86c]">
                   New upload
                 </p>
-                <h2 className="mt-3 text-2xl font-semibold text-[#fbf7ee]">
+                <h2 className="mt-3 text-2xl font-semibold text-[#162a5f]">
                   Upload study documents
                 </h2>
-                <p className="mt-2 text-sm text-[#beb5d3]">
+                <p className="mt-2 text-sm text-[#5f6d87]">
                   Add one or many study files and attach them to a subject.
                 </p>
               </div>
@@ -452,7 +452,7 @@ function UploadPageContent() {
               </label>
 
               {loadingSubjects ? (
-                <p className="text-sm text-[#bdb4d2]">Loading subjects...</p>
+                <p className="text-sm text-[#5f6d87]">Loading subjects...</p>
               ) : subjects.length === 0 ? (
                 <div className="rounded-2xl border border-amber-300/20 bg-amber-500/10 px-4 py-3 text-sm text-amber-100">
                   No subjects yet.{" "}
@@ -466,7 +466,7 @@ function UploadPageContent() {
                   <select
                     value={subjectId}
                     onChange={(e) => setSubjectId(e.target.value)}
-                    className="w-full rounded-2xl border border-[#564775] bg-[#17122b] px-4 py-3 text-sm text-[#fbf7ee] outline-none focus:border-[#d0a95b]"
+                    className="w-full rounded-2xl border border-[#d9ceb8] bg-white px-4 py-3 text-sm text-[#162a5f] outline-none focus:border-[#d0a95b]"
                   >
                     <option value="">No subject</option>
                     {subjects.map((subject) => (
@@ -476,13 +476,13 @@ function UploadPageContent() {
                     ))}
                   </select>
 
-                  <div className="rounded-2xl border border-[#6f5fb0]/30 bg-[#20193b] p-4">
+                  <div className="rounded-2xl border border-[#d8ccb6] bg-[#fffaf0] p-4">
                     <div className="flex flex-col gap-3 md:flex-row md:items-center md:justify-between">
                       <div>
-                        <p className="text-sm font-semibold text-[#f4dfae]">
+                        <p className="text-sm font-semibold text-[#162a5f]">
                           Rebuild syllabus
                         </p>
-                        <p className="mt-1 text-sm text-[#c6bdd9]">
+                        <p className="mt-1 text-sm text-[#5f6d87]">
                           Re-read existing documents for the selected subject and regenerate its topics, prerequisites, and study order.
                         </p>
                       </div>
@@ -508,7 +508,7 @@ function UploadPageContent() {
                 type="text"
                 value={title}
                 onChange={(e) => setTitle(e.target.value)}
-                className="w-full rounded-2xl border border-[#564775] bg-[#17122b] px-4 py-3 text-sm text-[#fbf7ee] outline-none focus:border-[#d0a95b]"
+                className="w-full rounded-2xl border border-[#d9ceb8] bg-white px-4 py-3 text-sm text-[#162a5f] outline-none focus:border-[#d0a95b]"
                 placeholder="e.g. Biology notes"
                 required
               />
@@ -525,18 +525,18 @@ function UploadPageContent() {
                 type="file"
                 multiple
                 onChange={(e) => setFiles(Array.from(e.target.files || []))}
-                className="w-full rounded-2xl border border-[#564775] bg-[#17122b] px-4 py-3 text-sm text-[#fbf7ee] file:mr-4 file:rounded-xl file:border-0 file:bg-[#caa04f] file:px-4 file:py-2 file:text-sm file:font-semibold file:text-[#20183b]"
+                className="w-full rounded-2xl border border-[#d9ceb8] bg-white px-4 py-3 text-sm text-[#162a5f] file:mr-4 file:rounded-xl file:border-0 file:bg-[#caa04f] file:px-4 file:py-2 file:text-sm file:font-semibold file:text-[#20183b]"
                 required
               />
 
               {files.length > 0 && (
-                <div className="mt-3 rounded-2xl border border-white/10 bg-white/5 p-4">
-                  <p className="text-sm font-medium text-[#f4dfae]">
+                <div className="mt-3 rounded-2xl border border-[#ddd2bf] bg-[#fffaf0] p-4">
+                  <p className="text-sm font-medium text-[#162a5f]">
                     {files.length} file{files.length === 1 ? "" : "s"} selected
                   </p>
                   <ul className="mt-2 space-y-1 text-sm text-[#c6bdd9]">
                     {files.map((file) => (
-                      <li key={file.name}>{file.name}</li>
+                    <li key={file.name}>{file.name}</li>
                     ))}
                   </ul>
                 </div>

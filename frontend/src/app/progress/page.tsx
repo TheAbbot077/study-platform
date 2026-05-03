@@ -658,21 +658,21 @@ function ProgressPageContent() {
   }
 
   return (
-    <main className="relative min-h-screen overflow-hidden bg-[#120f23] px-4 py-4 text-[#fbf7ee] sm:p-6">
-      <div className="absolute inset-0 bg-[radial-gradient(circle_at_top_left,_rgba(214,169,78,0.16),_transparent_24%),radial-gradient(circle_at_bottom_right,_rgba(82,59,142,0.28),_transparent_32%)]" />
-      <div className="absolute inset-0 opacity-25 [background-image:linear-gradient(rgba(255,255,255,0.04)_1px,transparent_1px),linear-gradient(90deg,rgba(255,255,255,0.04)_1px,transparent_1px)] [background-size:42px_42px]" />
+    <main className="relative min-h-screen overflow-hidden bg-[#f6f1e6] px-4 py-4 text-[#162a5f] sm:p-6">
+      <div className="absolute inset-0 bg-[radial-gradient(circle_at_top_left,_rgba(214,169,78,0.16),_transparent_24%),radial-gradient(circle_at_bottom_right,_rgba(82,59,142,0.14),_transparent_32%)]" />
+      <div className="absolute inset-0 opacity-20 [background-image:linear-gradient(rgba(22,42,95,0.05)_1px,transparent_1px),linear-gradient(90deg,rgba(22,42,95,0.05)_1px,transparent_1px)] [background-size:42px_42px]" />
       <div className="relative mx-auto max-w-6xl space-y-8">
         <div className="flex flex-col gap-4 md:flex-row md:items-end md:justify-between">
           <div>
             <p className="text-xs font-semibold uppercase tracking-[0.18em] text-[#ddb86c]">
               {selectedSubject ? "Subject Progress" : "Learning Progress"}
             </p>
-            <h1 className="mt-2 text-3xl font-bold text-[#fbf7ee]">
+            <h1 className="mt-2 text-3xl font-bold text-[#162a5f]">
               {selectedSubject
                 ? `${selectedSubject.name} Progress`
                 : "My Learning Progress"}
             </h1>
-            <p className="mt-2 text-[#c6bdd9]">
+            <p className="mt-2 text-[#5f6d87]">
               {selectedSubject
                 ? "Follow the syllabus topics for this subject, then open any topic in the tutor."
                 : "Track your mastery and see what to reinforce next."}
@@ -707,16 +707,16 @@ function ProgressPageContent() {
         </div>
 
         {selectedSubject && (
-          <section className="rounded-[1.85rem] border border-[#d0a95b]/20 bg-[#19142d]/92 p-6 shadow-[0_24px_70px_rgba(0,0,0,0.3)] backdrop-blur-sm">
+          <section className="rounded-[1.85rem] border border-[#d0a95b]/24 bg-white/90 p-6 shadow-[0_24px_70px_rgba(16,34,80,0.12)] backdrop-blur-sm">
             <div className="flex flex-col gap-4 lg:flex-row lg:items-start lg:justify-between">
               <div className="max-w-3xl">
                 <p className="text-sm font-semibold uppercase tracking-[0.18em] text-[#dcb86e]">
                   Subject syllabus
                 </p>
-                <h2 className="mt-2 text-2xl font-semibold text-[#fbf7ee]">
+                <h2 className="mt-2 text-2xl font-semibold text-[#162a5f]">
                   {selectedSubject.name}
                 </h2>
-                <p className="mt-2 text-sm text-[#c6bdd9]">
+                <p className="mt-2 text-sm text-[#5f6d87]">
                   Open the topics below in order. Clicking a teachable topic sends
                   you straight into the tutor for that part of the syllabus.
                 </p>
@@ -767,13 +767,13 @@ function ProgressPageContent() {
           <SummaryCard title="Struggling" value={summary.struggling} />
         </section>
 
-        <section className="rounded-[1.85rem] border border-white/10 bg-white/5 p-6 shadow-[0_18px_48px_rgba(0,0,0,0.22)] backdrop-blur-sm">
+        <section className="rounded-[1.85rem] border border-[#ddd2bf] bg-white/90 p-6 shadow-[0_18px_48px_rgba(16,34,80,0.1)] backdrop-blur-sm">
           <div className="flex flex-col gap-4 md:flex-row md:items-start md:justify-between">
             <div className="w-full max-w-3xl">
-              <h2 className="text-2xl font-semibold text-[#fbf7ee]">
+              <h2 className="text-2xl font-semibold text-[#162a5f]">
                 Average Mastery
               </h2>
-              <p className="mt-2 text-sm text-[#c6bdd9]">
+              <p className="mt-2 text-sm text-[#5f6d87]">
                 Overall learning strength across all tracked concepts.
               </p>
 
@@ -790,16 +790,16 @@ function ProgressPageContent() {
             </div>
 
             <div className="grid w-full gap-3 md:max-w-sm">
-              <div className="rounded-xl bg-[#201939] p-4">
+              <div className="rounded-xl bg-[#f5efe2] p-4">
                 <p className="text-sm text-[#a79dbf]">Strongest concept</p>
-                <p className="mt-1 font-semibold text-[#fbf7ee]">
+                <p className="mt-1 font-semibold text-[#162a5f]">
                   {summary.strongest_concept || "Not enough data yet"}
                 </p>
               </div>
 
-              <div className="rounded-xl bg-[#201939] p-4">
+              <div className="rounded-xl bg-[#f5efe2] p-4">
                 <p className="text-sm text-[#a79dbf]">Weakest concept</p>
-                <p className="mt-1 font-semibold text-[#fbf7ee]">
+                <p className="mt-1 font-semibold text-[#162a5f]">
                   {summary.weakest_concept || "Not enough data yet"}
                 </p>
               </div>
@@ -807,13 +807,13 @@ function ProgressPageContent() {
           </div>
         </section>
 
-        <section className="rounded-[1.85rem] border border-white/10 bg-white/5 p-6 shadow-[0_18px_48px_rgba(0,0,0,0.22)] backdrop-blur-sm">
+        <section className="rounded-[1.85rem] border border-[#ddd2bf] bg-white/90 p-6 shadow-[0_18px_48px_rgba(16,34,80,0.1)] backdrop-blur-sm">
           <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
             <div>
-              <h2 className="text-2xl font-semibold text-[#fbf7ee]">
+              <h2 className="text-2xl font-semibold text-[#162a5f]">
                 Recent Learning Activity
               </h2>
-              <p className="mt-2 text-sm text-[#c6bdd9]">
+              <p className="mt-2 text-sm text-[#5f6d87]">
                 A quick view of the latest concept work the system recorded.
               </p>
             </div>
@@ -832,18 +832,18 @@ function ProgressPageContent() {
               {summary.recent_activity.map((item) => (
                 <div
                   key={`${item.concept_name}-${item.created_at}-${item.event_type}`}
-                  className="rounded-2xl border border-white/10 bg-[#1b1530] p-4"
+                  className="rounded-2xl border border-[#ddd2bf] bg-[#fffaf0] p-4"
                 >
                   <div className="flex items-start justify-between gap-3">
                     <div>
                       <p className="text-sm font-medium text-[#d7b66d]">
                         {formatEventLabel(item.event_type)}
                       </p>
-                      <h3 className="mt-1 text-lg font-semibold text-[#fbf7ee]">
+                      <h3 className="mt-1 text-lg font-semibold text-[#162a5f]">
                         {item.concept_name}
                       </h3>
                     </div>
-                    <span className="rounded-full bg-white/10 px-3 py-1 text-xs font-medium text-[#d4cbe6]">
+                    <span className="rounded-full bg-[#162a5f]/8 px-3 py-1 text-xs font-medium text-[#4f5d79]">
                       {Math.round(item.score_after * 100)}%
                     </span>
                   </div>

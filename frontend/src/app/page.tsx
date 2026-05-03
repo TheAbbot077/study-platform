@@ -20,7 +20,7 @@ const featureItems = [
 
 export default function HomePage() {
   return (
-    <main className="relative min-h-screen overflow-hidden bg-[#0f2250] px-4 py-8 text-white sm:px-6 lg:px-10">
+    <main className="relative min-h-screen overflow-hidden bg-[#f6f1e6] px-4 py-8 text-white sm:px-6 lg:px-10">
       <div className="absolute inset-0 bg-[radial-gradient(circle_at_top_left,_rgba(217,178,87,0.18),_transparent_22%),radial-gradient(circle_at_bottom_right,_rgba(16,35,88,0.5),_transparent_36%),linear-gradient(180deg,_#0f2250_0%,_#101d43_100%)]" />
       <div className="absolute inset-0 opacity-20 [background-image:linear-gradient(rgba(255,255,255,0.05)_1px,transparent_1px),linear-gradient(90deg,rgba(255,255,255,0.05)_1px,transparent_1px)] [background-size:40px_40px]" />
 
@@ -73,8 +73,8 @@ export default function HomePage() {
             <div className="relative">
               <div className="relative h-[19rem] overflow-hidden sm:h-[24rem] lg:h-[28rem]">
                 <Image
-                  src="/library-shelves-hero.svg"
-                  alt="Library shelves as the backdrop for Abbot Study"
+                  src="/library-hero-real.jpg"
+                  alt="Books on library shelves with a graduation cap resting on stacked books"
                   fill
                   priority
                   className="object-cover"

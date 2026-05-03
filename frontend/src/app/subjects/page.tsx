@@ -225,66 +225,66 @@ export default function SubjectsPage() {
   );
 
   return (
-    <main className="relative min-h-screen overflow-hidden bg-[#120f23] px-4 py-6 text-[#f9f4e8] sm:px-6 sm:py-10">
-      <div className="absolute inset-0 bg-[radial-gradient(circle_at_top_left,_rgba(214,169,78,0.16),_transparent_24%),radial-gradient(circle_at_bottom_right,_rgba(82,59,142,0.28),_transparent_32%)]" />
-      <div className="absolute inset-0 opacity-25 [background-image:linear-gradient(rgba(255,255,255,0.04)_1px,transparent_1px),linear-gradient(90deg,rgba(255,255,255,0.04)_1px,transparent_1px)] [background-size:42px_42px]" />
+    <main className="relative min-h-screen overflow-hidden bg-[#f6f1e6] px-4 py-6 text-[#162a5f] sm:px-6 sm:py-10">
+      <div className="absolute inset-0 bg-[radial-gradient(circle_at_top_left,_rgba(214,169,78,0.18),_transparent_24%),radial-gradient(circle_at_bottom_right,_rgba(70,92,155,0.12),_transparent_34%)]" />
+      <div className="absolute inset-0 opacity-20 [background-image:linear-gradient(rgba(22,42,95,0.05)_1px,transparent_1px),linear-gradient(90deg,rgba(22,42,95,0.05)_1px,transparent_1px)] [background-size:42px_42px]" />
 
       <div className="relative mx-auto max-w-7xl space-y-8">
-        <section className="overflow-hidden rounded-[2rem] border border-[#d0a95b]/25 bg-[#18132d]/90 shadow-[0_30px_90px_rgba(0,0,0,0.35)] backdrop-blur-sm">
+        <section className="overflow-hidden rounded-[2rem] border border-[#d0a95b]/30 bg-[linear-gradient(180deg,_rgba(255,252,246,0.96)_0%,_rgba(246,239,224,0.98)_100%)] shadow-[0_30px_90px_rgba(16,34,80,0.12)] backdrop-blur-sm">
           <div className="grid gap-8 px-6 py-8 lg:grid-cols-[minmax(0,1.25fr)_minmax(320px,0.75fr)] lg:px-8">
             <div>
               <div className="inline-flex rounded-full border border-[#d0a95b]/35 bg-[#231a3d] px-4 py-2 text-xs font-semibold uppercase tracking-[0.2em] text-[#e5c57d]">
                 Student Dashboard
               </div>
-              <h1 className="mt-5 max-w-4xl text-4xl font-semibold tracking-tight text-[#fbf7ee] sm:text-5xl">
+              <h1 className="mt-5 max-w-4xl text-4xl font-semibold tracking-tight text-[#162a5f] sm:text-5xl">
                 Your private study library, organized by subject and ready to teach forward.
               </h1>
-              <p className="mt-5 max-w-3xl text-sm leading-7 text-[#cbc2df] sm:text-base">
+              <p className="mt-5 max-w-3xl text-sm leading-7 text-[#5a6783] sm:text-base">
                 Create a subject, upload the materials that belong to it, and open
                 the subject to move through its syllabus in order. Every subject
                 card below shows how far along you are.
               </p>
 
               <div className="mt-8 grid gap-4 sm:grid-cols-3">
-                <div className="rounded-3xl border border-white/10 bg-white/5 p-5">
+                <div className="rounded-3xl border border-[#d9ceb8] bg-white/85 p-5">
                   <p className="text-xs font-semibold uppercase tracking-[0.18em] text-[#ddb86c]">
                     Subjects
                   </p>
-                  <p className="mt-3 text-3xl font-bold text-[#fbf7ee]">
+                  <p className="mt-3 text-3xl font-bold text-[#162a5f]">
                     {totalSubjects}
                   </p>
-                  <p className="mt-2 text-sm text-[#b9b0cf]">
+                  <p className="mt-2 text-sm text-[#66738e]">
                     Total subject spaces created
                   </p>
                 </div>
 
-                <div className="rounded-3xl border border-white/10 bg-white/5 p-5">
+                <div className="rounded-3xl border border-[#d9ceb8] bg-white/85 p-5">
                   <p className="text-xs font-semibold uppercase tracking-[0.18em] text-[#ddb86c]">
                     Active
                   </p>
-                  <p className="mt-3 text-3xl font-bold text-[#fbf7ee]">
+                  <p className="mt-3 text-3xl font-bold text-[#162a5f]">
                     {activeSubjects}
                   </p>
-                  <p className="mt-2 text-sm text-[#b9b0cf]">
+                  <p className="mt-2 text-sm text-[#66738e]">
                     Subjects already in motion
                   </p>
                 </div>
 
-                <div className="rounded-3xl border border-white/10 bg-white/5 p-5">
+                <div className="rounded-3xl border border-[#d9ceb8] bg-white/85 p-5">
                   <p className="text-xs font-semibold uppercase tracking-[0.18em] text-[#ddb86c]">
                     Mastered
                   </p>
-                  <p className="mt-3 text-3xl font-bold text-[#fbf7ee]">
+                  <p className="mt-3 text-3xl font-bold text-[#162a5f]">
                     {masteredTopics}
                   </p>
-                  <p className="mt-2 text-sm text-[#b9b0cf]">
+                  <p className="mt-2 text-sm text-[#66738e]">
                     Teachable topics completed
                   </p>
                 </div>
               </div>
             </div>
 
-            <div className="rounded-[1.75rem] border border-[#d0a95b]/20 bg-[linear-gradient(180deg,_rgba(36,27,61,0.95)_0%,_rgba(23,18,41,0.95)_100%)] p-6">
+            <div className="rounded-[1.75rem] border border-[#d0a95b]/20 bg-[linear-gradient(180deg,_rgba(23,41,92,0.96)_0%,_rgba(17,31,72,0.98)_100%)] p-6">
               <p className="text-xs font-semibold uppercase tracking-[0.18em] text-[#d8b66d]">
                 Learning flow
               </p>
@@ -307,16 +307,16 @@ export default function SubjectsPage() {
         </section>
 
         <div className="grid gap-6 xl:grid-cols-[minmax(0,2fr)_minmax(340px,0.95fr)]">
-          <section className="rounded-[2rem] border border-[#d0a95b]/20 bg-[#18142e]/92 p-6 shadow-[0_24px_70px_rgba(0,0,0,0.3)] backdrop-blur-sm">
+          <section className="rounded-[2rem] border border-[#d0a95b]/24 bg-white/88 p-6 shadow-[0_24px_70px_rgba(16,34,80,0.12)] backdrop-blur-sm">
             <div className="flex items-start justify-between gap-4">
               <div>
                 <p className="text-xs font-semibold uppercase tracking-[0.18em] text-[#ddb86c]">
                   Subject collection
                 </p>
-                <h2 className="mt-3 text-2xl font-semibold text-[#fbf7ee]">
+                <h2 className="mt-3 text-2xl font-semibold text-[#162a5f]">
                   Open a subject to continue studying
                 </h2>
-                <p className="mt-2 text-sm text-[#bdb4d2]">
+                <p className="mt-2 text-sm text-[#5f6d87]">
                   Each subject opens into a syllabus view, where the learner clicks
                   topics and enters the tutor from the correct place.
                 </p>
@@ -324,9 +324,9 @@ export default function SubjectsPage() {
             </div>
 
             {loading ? (
-              <p className="mt-6 text-sm text-[#bdb4d2]">Loading subjects...</p>
+              <p className="mt-6 text-sm text-[#5f6d87]">Loading subjects...</p>
             ) : subjects.length === 0 ? (
-              <div className="mt-6 rounded-3xl border border-dashed border-[#6f5a2c] bg-[#140f25] px-5 py-6 text-sm text-[#c9c0dc]">
+              <div className="mt-6 rounded-3xl border border-dashed border-[#c9b27b] bg-[#fffaf0] px-5 py-6 text-sm text-[#5f6d87]">
                 No subjects yet. Use the panel on the right to create your first
                 one and begin building your study library.
               </div>
@@ -344,20 +344,20 @@ export default function SubjectsPage() {
                     <Link
                       key={subject.id}
                       href={`/progress?subject=${subject.id}`}
-                      className="group rounded-[1.75rem] border border-white/10 bg-[linear-gradient(180deg,_rgba(34,27,56,0.96)_0%,_rgba(23,19,40,0.96)_100%)] p-5 transition hover:border-[#d0a95b]/40 hover:bg-[linear-gradient(180deg,_rgba(40,31,67,0.98)_0%,_rgba(26,21,45,0.98)_100%)]"
+                      className="group rounded-[1.75rem] border border-[#ddd2bf] bg-[linear-gradient(180deg,_rgba(255,255,255,0.94)_0%,_rgba(248,243,233,0.98)_100%)] p-5 transition hover:border-[#d0a95b]/40 hover:bg-[linear-gradient(180deg,_rgba(255,255,255,0.98)_0%,_rgba(244,238,225,0.98)_100%)]"
                     >
                       <div className="flex flex-col gap-5 lg:flex-row lg:items-start lg:justify-between">
                         <div className="min-w-0 flex-1">
                           <div className="flex items-center justify-between gap-4">
-                            <h3 className="text-xl font-semibold text-[#fbf7ee]">
+                            <h3 className="text-xl font-semibold text-[#162a5f]">
                               {subject.name}
                             </h3>
-                            <span className="text-sm font-medium text-[#d6b46a] transition group-hover:text-[#ecd69b]">
+                            <span className="text-sm font-medium text-[#9d7b39] transition group-hover:text-[#b88f42]">
                               Open syllabus →
                             </span>
                           </div>
 
-                          <p className="mt-2 text-sm text-[#beb5d3]">
+                          <p className="mt-2 text-sm text-[#5f6d87]">
                             {progress.totalLeafTopics > 0
                               ? `${progress.completedLeafTopics} of ${progress.totalLeafTopics} teachable topics mastered`
                               : "Ready for uploads and syllabus building"}
@@ -369,27 +369,27 @@ export default function SubjectsPage() {
                         </div>
 
                         <div className="grid shrink-0 gap-3 sm:grid-cols-3 lg:w-[290px] lg:grid-cols-1">
-                          <div className="rounded-2xl border border-white/10 bg-white/5 px-4 py-3">
+                          <div className="rounded-2xl border border-[#dfd4c0] bg-white/90 px-4 py-3">
                             <p className="text-xs uppercase tracking-[0.14em] text-[#8e84a6]">
                               Topics
                             </p>
-                            <p className="mt-2 text-lg font-semibold text-[#fbf7ee]">
+                              <p className="mt-2 text-lg font-semibold text-[#162a5f]">
                               {progress.totalLeafTopics}
                             </p>
                           </div>
-                          <div className="rounded-2xl border border-white/10 bg-white/5 px-4 py-3">
+                          <div className="rounded-2xl border border-[#dfd4c0] bg-white/90 px-4 py-3">
                             <p className="text-xs uppercase tracking-[0.14em] text-[#8e84a6]">
                               Started
                             </p>
-                            <p className="mt-2 text-lg font-semibold text-[#fbf7ee]">
+                              <p className="mt-2 text-lg font-semibold text-[#162a5f]">
                               {progress.startedLeafTopics}
                             </p>
                           </div>
-                          <div className="rounded-2xl border border-white/10 bg-white/5 px-4 py-3">
+                          <div className="rounded-2xl border border-[#dfd4c0] bg-white/90 px-4 py-3">
                             <p className="text-xs uppercase tracking-[0.14em] text-[#8e84a6]">
                               Mastered
                             </p>
-                            <p className="mt-2 text-lg font-semibold text-[#fbf7ee]">
+                              <p className="mt-2 text-lg font-semibold text-[#162a5f]">
                               {progress.completedLeafTopics}
                             </p>
                           </div>
@@ -402,14 +402,14 @@ export default function SubjectsPage() {
             )}
           </section>
 
-          <aside className="rounded-[2rem] border border-[#d0a95b]/20 bg-[#19142d]/92 p-6 shadow-[0_24px_70px_rgba(0,0,0,0.3)] backdrop-blur-sm">
+          <aside className="rounded-[2rem] border border-[#d0a95b]/24 bg-white/88 p-6 shadow-[0_24px_70px_rgba(16,34,80,0.12)] backdrop-blur-sm">
             <p className="text-xs font-semibold uppercase tracking-[0.18em] text-[#ddb86c]">
               New subject
             </p>
-            <h2 className="mt-3 text-2xl font-semibold text-[#fbf7ee]">
+            <h2 className="mt-3 text-2xl font-semibold text-[#162a5f]">
               Create a subject space
             </h2>
-            <p className="mt-2 text-sm text-[#beb5d3]">
+            <p className="mt-2 text-sm text-[#5f6d87]">
               Start with the course name, textbook, or unit you want to turn into a
               guided learning track.
             </p>
@@ -424,7 +424,7 @@ export default function SubjectsPage() {
                   value={name}
                   onChange={(e) => setName(e.target.value)}
                   placeholder="e.g. AP Biology"
-                  className="w-full rounded-2xl border border-[#4f426f] bg-[#120f22] px-4 py-3 text-sm text-[#fbf7ee] outline-none transition placeholder:text-[#7d7498] focus:border-[#d0a95b] focus:ring-2 focus:ring-[#d0a95b]/25"
+                  className="w-full rounded-2xl border border-[#d9ceb8] bg-white px-4 py-3 text-sm text-[#162a5f] outline-none transition placeholder:text-[#8d8ba0] focus:border-[#d0a95b] focus:ring-2 focus:ring-[#d0a95b]/25"
                 />
               </div>
 
@@ -443,32 +443,32 @@ export default function SubjectsPage() {
               </p>
             )}
 
-            <div className="mt-6 rounded-[1.6rem] border border-white/10 bg-white/5 p-5">
+            <div className="mt-6 rounded-[1.6rem] border border-[#ddd2bf] bg-[#fffaf0] p-5">
               <p className="text-sm font-medium text-[#f7e8bf]">What happens next</p>
               <div className="mt-4 space-y-3 text-sm text-[#c9c0dc]">
-                <p className="rounded-2xl border border-white/10 bg-[#120f22] px-4 py-3">
+                <p className="rounded-2xl border border-[#e1d6c0] bg-white px-4 py-3">
                   Upload the book or notes that belong to this subject.
                 </p>
-                <p className="rounded-2xl border border-white/10 bg-[#120f22] px-4 py-3">
+                <p className="rounded-2xl border border-[#e1d6c0] bg-white px-4 py-3">
                   Rebuild the syllabus if you want the latest extraction logic.
                 </p>
-                <p className="rounded-2xl border border-white/10 bg-[#120f22] px-4 py-3">
+                <p className="rounded-2xl border border-[#e1d6c0] bg-white px-4 py-3">
                   Open the subject progress page and click directly into a topic.
                 </p>
               </div>
             </div>
 
             {subjects.length > 0 && (
-              <div className="mt-6 rounded-[1.6rem] border border-white/10 bg-white/5 p-5">
+              <div className="mt-6 rounded-[1.6rem] border border-[#ddd2bf] bg-[#fffaf0] p-5">
                 <p className="text-sm font-medium text-[#f7e8bf]">Manage subjects</p>
                 <div className="mt-4 space-y-3">
                   {subjects.map((subject) => (
                     <div
                       key={`manage-${subject.id}`}
-                      className="rounded-2xl border border-white/10 bg-[#120f22] px-4 py-3"
+                      className="rounded-2xl border border-[#e1d6c0] bg-white px-4 py-3"
                     >
                       <div className="flex items-center justify-between gap-3">
-                        <p className="text-sm font-medium text-[#f9f4e8]">
+                        <p className="text-sm font-medium text-[#162a5f]">
                           {subject.name}
                         </p>
                         <div className="flex flex-wrap items-center gap-2">
