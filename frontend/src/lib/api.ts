@@ -172,12 +172,18 @@ export async function ensureCsrfCookie() {
 
 export async function apiFetch(url: string, options: RequestInit = {}) {
   const isFormData = options.body instanceof FormData;
+  const method = (options.method || "GET").toUpperCase();
+  const needsCsrf =
+    !["GET", "HEAD", "OPTIONS", "TRACE"].includes(method);
   const useCookieCsrf = !isCrossOriginApiBaseUrl();
-  let csrfToken = useCookieCsrf
-    ? getCookie("csrftoken") || cachedCsrfToken
-    : cachedCsrfToken;
+  let csrfToken =
+    needsCsrf && useCookieCsrf
+      ? getCookie("csrftoken") || cachedCsrfToken
+      : needsCsrf
+      ? cachedCsrfToken
+      : null;
 
-  if (!csrfToken) {
+  if (needsCsrf && (!csrfToken || isCrossOriginApiBaseUrl())) {
     await ensureCsrfCookie();
     csrfToken = useCookieCsrf
       ? getCookie("csrftoken") || cachedCsrfToken
