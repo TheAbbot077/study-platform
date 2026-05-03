@@ -848,13 +848,13 @@ function TutorPageContent() {
       <div className="absolute inset-0 opacity-20 [background-image:linear-gradient(rgba(255,255,255,0.04)_1px,transparent_1px),linear-gradient(90deg,rgba(255,255,255,0.04)_1px,transparent_1px)] [background-size:42px_42px]" />
       <div className={`mx-auto ${isFocusMode ? "max-w-none" : "max-w-7xl space-y-6"}`}>
         <div
-          className={`sticky top-0 z-20 flex flex-col gap-4 border border-[#d0a95b]/20 bg-[#18132d]/90 backdrop-blur-sm sm:flex-row sm:items-center sm:justify-between ${
+          className={`sticky z-20 flex flex-col gap-4 border border-[#d0a95b]/20 bg-[#18132d]/90 backdrop-blur-sm ${
             isFocusMode
-              ? "border-x-0 border-t-0 border-b-[#d0a95b]/20 px-4 py-4 shadow-[0_24px_70px_rgba(0,0,0,0.28)] sm:px-6"
-              : "mx-auto rounded-[1.8rem] px-4 py-4 shadow-[0_24px_70px_rgba(0,0,0,0.28)] sm:px-6"
+              ? "top-0 border-x-0 border-t-0 border-b-[#d0a95b]/20 px-4 py-4 shadow-[0_24px_70px_rgba(0,0,0,0.28)] sm:px-6"
+              : "top-[7.75rem] rounded-[1.8rem] px-4 py-4 shadow-[0_24px_70px_rgba(0,0,0,0.28)] md:top-4 md:mx-auto sm:px-6"
           }`}
         >
-          <div>
+          <div className="min-w-0">
             <h1 className={`${isFocusMode ? "text-2xl" : "text-3xl"} font-bold text-[#fbf7ee]`}>
               Abbot Study Tutor
             </h1>
@@ -863,7 +863,7 @@ function TutorPageContent() {
                 <Link
                   key={item.href}
                   href={item.href}
-                  className="rounded-full border border-white/10 bg-white/[0.06] px-3 py-1.5 text-xs font-semibold uppercase tracking-[0.16em] text-[#e7d5a0] transition hover:bg-white/[0.1]"
+                  className="rounded-full border border-white/10 bg-white/[0.06] px-3 py-1.5 text-center text-[11px] font-semibold uppercase tracking-[0.16em] text-[#e7d5a0] transition hover:bg-white/[0.1] sm:text-xs"
                 >
                   {item.label}
                 </Link>
@@ -876,8 +876,8 @@ function TutorPageContent() {
             )}
           </div>
 
-          <div className="flex w-full flex-col gap-3 sm:w-auto sm:flex-row sm:items-center">
-            <div className="flex items-center justify-between gap-2 rounded-2xl border border-[#d0a95b]/20 bg-white/[0.05] px-3 py-2 sm:justify-start">
+          <div className="grid w-full gap-3 sm:grid-cols-2 xl:flex xl:w-auto xl:flex-wrap xl:justify-end xl:items-center">
+            <div className="flex items-center justify-between gap-2 rounded-2xl border border-[#d0a95b]/20 bg-white/[0.05] px-3 py-2 sm:col-span-2 xl:col-span-1 xl:min-w-[10.5rem]">
               <span className="text-xs font-semibold uppercase tracking-[0.16em] text-[#d9bb74]">
                 Zoom
               </span>
@@ -927,14 +927,14 @@ function TutorPageContent() {
             <button
               type="button"
               onClick={() => router.push(isFocusMode ? standardModeUrl : focusModeUrl)}
-              className="w-full rounded-2xl border border-[#6d5b8d]/45 bg-[#1f1836] px-4 py-2 text-sm font-medium text-[#f0ddb0] transition hover:border-[#d0a95b]/35 hover:bg-[#2a2045] sm:w-auto"
+              className="w-full rounded-2xl border border-[#6d5b8d]/45 bg-[#1f1836] px-4 py-2 text-sm font-medium text-[#f0ddb0] transition hover:border-[#d0a95b]/35 hover:bg-[#2a2045]"
             >
               {isFocusMode ? "Exit full screen" : "Full screen"}
             </button>
             <button
               type="button"
               onClick={handleBackToProgress}
-              className="w-full rounded-2xl bg-[#caa04f] px-4 py-2 text-sm font-medium text-[#20183b] transition hover:bg-[#ddb86c] sm:w-auto"
+              className="w-full rounded-2xl bg-[#caa04f] px-4 py-2 text-sm font-medium text-[#20183b] transition hover:bg-[#ddb86c]"
             >
               Back to Progress
             </button>
@@ -942,7 +942,7 @@ function TutorPageContent() {
               type="button"
               onClick={handleRestartConcept}
               disabled={restartingConcept || !(focusedConcept || selectedConcept)}
-              className="w-full rounded-2xl border border-amber-300/20 bg-amber-500/10 px-4 py-2 text-sm font-medium text-amber-100 transition hover:bg-amber-500/20 disabled:cursor-not-allowed disabled:opacity-60 sm:w-auto"
+              className="w-full rounded-2xl border border-amber-300/20 bg-amber-500/10 px-4 py-2 text-sm font-medium text-amber-100 transition hover:bg-amber-500/20 disabled:cursor-not-allowed disabled:opacity-60"
             >
               {restartingConcept ? "Restarting..." : "Restart concept"}
             </button>
@@ -950,7 +950,7 @@ function TutorPageContent() {
               type="button"
               onClick={handleLogout}
               disabled={loggingOut}
-              className="w-full rounded-2xl border border-[#6d5b8d]/45 bg-[#1f1836] px-4 py-2 text-sm font-medium text-[#f0ddb0] transition hover:border-[#d0a95b]/35 hover:bg-[#2a2045] disabled:cursor-not-allowed disabled:opacity-60 sm:w-auto"
+              className="w-full rounded-2xl border border-[#6d5b8d]/45 bg-[#1f1836] px-4 py-2 text-sm font-medium text-[#f0ddb0] transition hover:border-[#d0a95b]/35 hover:bg-[#2a2045] disabled:cursor-not-allowed disabled:opacity-60"
             >
               {loggingOut ? "Logging out..." : "Log out"}
             </button>
