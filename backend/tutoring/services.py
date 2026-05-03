@@ -7,6 +7,7 @@ from openai import OpenAI
 from knowledge.models import Concept, ConceptRelation
 from knowledge.services import semantic_search
 from learning.models import LearnerConceptMastery
+from learning.models import LearnerConceptEvent
 from learning.services import (
     apply_mastery_delta,
     get_personalized_recommendations,
@@ -183,6 +184,39 @@ def reset_to_checkpoint(user, checkpoint_message):
     session.save(update_fields=["target_concept"])
 
     return checkpoint_message
+
+
+@transaction.atomic
+def restart_concept_session(user, concept):
+    if concept is None:
+        raise ValueError("Choose a concept before restarting it.")
+
+    StudyMessage.objects.filter(
+        session__user=user,
+        concept=concept,
+    ).delete()
+
+    ConceptCheck.objects.filter(
+        session__user=user,
+        concept=concept,
+    ).delete()
+
+    LearnerConceptEvent.objects.filter(
+        user=user,
+        concept=concept,
+    ).delete()
+
+    LearnerConceptMastery.objects.filter(
+        user=user,
+        concept=concept,
+    ).delete()
+
+    session = get_or_create_session(user)
+    session.target_concept = concept
+    session.session_type = "TEACH"
+    session.save(update_fields=["target_concept", "session_type"])
+
+    return session
 
 
 def detect_concept(query: str, subject=None):

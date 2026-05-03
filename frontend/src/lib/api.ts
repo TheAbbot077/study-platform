@@ -26,6 +26,19 @@ const API_BASE_URL =
       : ""
     : configuredApiBaseUrl.replace(/\/$/, "");
 
+function isCrossOriginApiBaseUrl() {
+  if (typeof window === "undefined" || !API_BASE_URL) {
+    return false;
+  }
+
+  try {
+    const apiOrigin = new URL(API_BASE_URL, window.location.origin).origin;
+    return apiOrigin !== window.location.origin;
+  } catch {
+    return false;
+  }
+}
+
 export class ApiError extends Error {
   status: number;
   details?: unknown;
@@ -135,6 +148,7 @@ export async function ensureCsrfCookie() {
     const response = await fetch(`${API_BASE_URL}/api/accounts/csrf/`, {
       method: "GET",
       credentials: "include",
+      cache: "no-store",
     });
 
     if (!response.ok) {
@@ -158,11 +172,16 @@ export async function ensureCsrfCookie() {
 
 export async function apiFetch(url: string, options: RequestInit = {}) {
   const isFormData = options.body instanceof FormData;
-  let csrfToken = getCookie("csrftoken") || cachedCsrfToken;
+  const useCookieCsrf = !isCrossOriginApiBaseUrl();
+  let csrfToken = useCookieCsrf
+    ? getCookie("csrftoken") || cachedCsrfToken
+    : cachedCsrfToken;
 
   if (!csrfToken) {
     await ensureCsrfCookie();
-    csrfToken = getCookie("csrftoken") || cachedCsrfToken;
+    csrfToken = useCookieCsrf
+      ? getCookie("csrftoken") || cachedCsrfToken
+      : cachedCsrfToken;
   }
 
   let response: Response;

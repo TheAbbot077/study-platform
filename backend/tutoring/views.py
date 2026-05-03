@@ -8,7 +8,12 @@ from django.db.models import Q
 from knowledge.models import Concept
 from .models import StudyMessage
 from uploads.models import Subject
-from .services import answer_tutor_request, set_checkpoint, reset_to_checkpoint
+from .services import (
+    answer_tutor_request,
+    set_checkpoint,
+    reset_to_checkpoint,
+    restart_concept_session,
+)
 
 
 def get_owned_subject(user, subject_id):
@@ -219,6 +224,53 @@ class TutorResetAPIView(APIView):
                     }
                     for history_message in messages
                 ],
+            },
+            status=status.HTTP_200_OK,
+        )
+
+
+class TutorRestartAPIView(APIView):
+    permission_classes = [IsAuthenticated]
+
+    def post(self, request):
+        concept_name = request.data.get("concept_name")
+        subject_id = request.data.get("subject_id")
+
+        if not concept_name:
+            return Response(
+                {"error": "Concept name is required."},
+                status=status.HTTP_400_BAD_REQUEST,
+            )
+
+        subject, concept = get_subject_concept(
+            request.user,
+            concept_name,
+            subject_id,
+        )
+        if subject is False:
+            return Response(
+                {"error": "Selected subject was not found."},
+                status=status.HTTP_404_NOT_FOUND,
+            )
+        if concept is None:
+            return Response(
+                {"error": "Selected concept was not found."},
+                status=status.HTTP_404_NOT_FOUND,
+            )
+
+        try:
+            restart_concept_session(request.user, concept)
+        except ValueError as exc:
+            return Response(
+                {"error": str(exc)},
+                status=status.HTTP_400_BAD_REQUEST,
+            )
+
+        return Response(
+            {
+                "concept_name": concept.name,
+                "subject_id": concept.subject_id,
+                "messages": [],
             },
             status=status.HTTP_200_OK,
         )

@@ -3,6 +3,7 @@
 export const dynamic = "force-dynamic";
 
 import katex from "katex";
+import Link from "next/link";
 import { useRouter, useSearchParams } from "next/navigation";
 import { Suspense, useCallback, useEffect, useRef, useState } from "react";
 import { apiFetch, getDisplayErrorMessage } from "../../lib/api";
@@ -80,6 +81,12 @@ type TopicNode = TopicItem & {
 };
 
 const TUTOR_PAGE_ZOOM_OPTIONS = [90, 100, 110, 125] as const;
+const TUTOR_NAV_ITEMS = [
+  { href: "/subjects", label: "Dashboard" },
+  { href: "/upload", label: "Upload" },
+  { href: "/progress", label: "Progress" },
+  { href: "/tutor", label: "Tutor" },
+] as const;
 
 function getTutorPaperWidthClass(zoom: (typeof TUTOR_PAGE_ZOOM_OPTIONS)[number]) {
   if (zoom >= 125) {
@@ -261,6 +268,7 @@ function TutorPageContent() {
   const [historyError, setHistoryError] = useState("");
   const [checkpointNotice, setCheckpointNotice] = useState("");
   const [switchNotice, setSwitchNotice] = useState("");
+  const [logoutError, setLogoutError] = useState("");
   const [dataNextAction, setDataNextAction] = useState<string>("");
   const [dataNextActionType, setDataNextActionType] = useState<
     "advance" | "respond" | null
@@ -270,6 +278,8 @@ function TutorPageContent() {
   >([]);
   const [checkpointSavingId, setCheckpointSavingId] = useState<number | null>(null);
   const [checkpointResettingId, setCheckpointResettingId] = useState<number | null>(null);
+  const [restartingConcept, setRestartingConcept] = useState(false);
+  const [loggingOut, setLoggingOut] = useState(false);
   const [pageZoom, setPageZoom] =
     useState<(typeof TUTOR_PAGE_ZOOM_OPTIONS)[number]>(100);
   const autoStartedRef = useRef(false);
@@ -614,6 +624,55 @@ function TutorPageContent() {
     await sendTutorRequest("__NEXT__");
   }
 
+  async function handleRestartConcept() {
+    const conceptToRestart = focusedConcept || selectedConcept;
+    if (!conceptToRestart) return;
+
+    const confirmed = window.confirm(
+      `Restart ${conceptToRestart} from the beginning? This clears the saved tutor thread and progress for this concept.`
+    );
+    if (!confirmed) return;
+
+    try {
+      setRestartingConcept(true);
+      setError("");
+      setHistoryError("");
+      setCheckpointNotice("");
+      setSwitchNotice("");
+
+      await apiFetch("/api/tutor/restart/", {
+        method: "POST",
+        body: JSON.stringify({
+          concept_name: conceptToRestart,
+          subject_id: selectedSubjectId ? Number(selectedSubjectId) : null,
+        }),
+      });
+
+      setConversationHistory([]);
+      setAnswer("");
+      setMasteryScore(null);
+      setSessionType("");
+      setNextStep(null);
+      setDataNextAction("");
+      setDataNextActionType(null);
+      setQuery("");
+      setCheckpointNotice(
+        `${conceptToRestart} has been restarted. The tutor is beginning again from the foundation.`
+      );
+      await sendTutorRequest("");
+    } catch (err) {
+      console.error(err);
+      setError(
+        getDisplayErrorMessage(
+          err,
+          "We could not restart this concept just now. Please try again."
+        )
+      );
+    } finally {
+      setRestartingConcept(false);
+    }
+  }
+
   useEffect(() => {
     if (!autoStart || !selectedConcept || autoStartedRef.current) {
       return;
@@ -632,7 +691,32 @@ function TutorPageContent() {
       sessionStorage.setItem("lastStudiedConcept", conceptForProgress);
     }
 
-    router.push("/progress");
+    const progressUrl = selectedSubjectId
+      ? `/progress?subject=${selectedSubjectId}`
+      : "/progress";
+    router.push(progressUrl);
+  }
+
+  async function handleLogout() {
+    try {
+      setLoggingOut(true);
+      setLogoutError("");
+      await apiFetch("/api/accounts/logout/", { method: "POST" });
+      sessionStorage.removeItem("refreshProgress");
+      sessionStorage.removeItem("lastStudiedConcept");
+      router.push("/login");
+      router.refresh();
+    } catch (err) {
+      console.error(err);
+      setLogoutError(
+        getDisplayErrorMessage(
+          err,
+          "We could not log you out just now. Please try again."
+        )
+      );
+    } finally {
+      setLoggingOut(false);
+    }
   }
 
   function handleSubjectChange(nextSubjectId: string) {
@@ -774,6 +858,17 @@ function TutorPageContent() {
             <h1 className={`${isFocusMode ? "text-2xl" : "text-3xl"} font-bold text-[#fbf7ee]`}>
               Abbot Study Tutor
             </h1>
+            <div className="mt-3 flex flex-wrap gap-2">
+              {TUTOR_NAV_ITEMS.map((item) => (
+                <Link
+                  key={item.href}
+                  href={item.href}
+                  className="rounded-full border border-white/10 bg-white/[0.06] px-3 py-1.5 text-xs font-semibold uppercase tracking-[0.16em] text-[#e7d5a0] transition hover:bg-white/[0.1]"
+                >
+                  {item.label}
+                </Link>
+              ))}
+            </div>
             {!isFocusMode && (
               <p className="mt-2 text-[#c8bfd9]">
                 Ask questions, get adaptive guidance, and build mastery.
@@ -843,8 +938,34 @@ function TutorPageContent() {
             >
               Back to Progress
             </button>
+            <button
+              type="button"
+              onClick={handleRestartConcept}
+              disabled={restartingConcept || !(focusedConcept || selectedConcept)}
+              className="w-full rounded-2xl border border-amber-300/20 bg-amber-500/10 px-4 py-2 text-sm font-medium text-amber-100 transition hover:bg-amber-500/20 disabled:cursor-not-allowed disabled:opacity-60 sm:w-auto"
+            >
+              {restartingConcept ? "Restarting..." : "Restart concept"}
+            </button>
+            <button
+              type="button"
+              onClick={handleLogout}
+              disabled={loggingOut}
+              className="w-full rounded-2xl border border-[#6d5b8d]/45 bg-[#1f1836] px-4 py-2 text-sm font-medium text-[#f0ddb0] transition hover:border-[#d0a95b]/35 hover:bg-[#2a2045] disabled:cursor-not-allowed disabled:opacity-60 sm:w-auto"
+            >
+              {loggingOut ? "Logging out..." : "Log out"}
+            </button>
           </div>
         </div>
+
+        {logoutError && (
+          <p
+            className={`rounded-2xl border border-red-300/20 bg-red-500/10 px-4 py-3 text-sm text-red-200 ${
+              isFocusMode ? "mx-4 mt-4 sm:mx-6" : ""
+            }`}
+          >
+            {logoutError}
+          </p>
+        )}
 
         <div
           className={`grid ${

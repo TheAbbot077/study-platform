@@ -44,6 +44,30 @@ class SubjectListCreateAPIView(APIView):
         )
 
 
+class SubjectDetailAPIView(APIView):
+    permission_classes = [IsAuthenticated]
+
+    def delete(self, request, subject_id):
+        try:
+            subject = Subject.objects.get(
+                id=subject_id,
+                user=request.user,
+            )
+        except Subject.DoesNotExist:
+            return Response(
+                {"error": "Selected subject was not found."},
+                status=status.HTTP_404_NOT_FOUND,
+            )
+
+        subject_name = subject.name
+        subject.delete()
+
+        return Response(
+            {"message": f"{subject_name} was deleted."},
+            status=status.HTTP_200_OK,
+        )
+
+
 class DocumentListAPIView(APIView):
     permission_classes = [IsAuthenticated]
 
