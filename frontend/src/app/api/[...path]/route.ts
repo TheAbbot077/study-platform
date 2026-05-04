@@ -28,8 +28,9 @@ function getBackendBaseUrl() {
 function buildUpstreamUrl(request: NextRequest, path: string[]) {
   const requestUrl = new URL(request.url);
   const normalizedPath = path.join("/");
+  const suffix = normalizedPath.endsWith("/") ? normalizedPath : `${normalizedPath}/`;
 
-  return `${getBackendBaseUrl()}/api/${normalizedPath}${requestUrl.search}`;
+  return `${getBackendBaseUrl()}/api/${suffix}${requestUrl.search}`;
 }
 
 function buildUpstreamHeaders(request: NextRequest) {
