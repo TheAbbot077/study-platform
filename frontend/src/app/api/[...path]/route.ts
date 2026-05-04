@@ -59,7 +59,10 @@ async function proxyRequest(
   };
 
   if (!["GET", "HEAD"].includes(request.method)) {
-    requestInit.body = request.body;
+    const body = await request.arrayBuffer();
+    if (body.byteLength > 0) {
+      requestInit.body = body;
+    }
   }
 
   let upstreamResponse: Response;
