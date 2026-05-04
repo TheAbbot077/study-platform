@@ -59,9 +59,19 @@ async function proxyRequest(
   };
 
   if (!["GET", "HEAD"].includes(request.method)) {
-    const body = await request.arrayBuffer();
-    if (body.byteLength > 0) {
-      requestInit.body = body;
+    if (request.body) {
+      (
+        requestInit as RequestInit & {
+          body?: ReadableStream<Uint8Array>;
+          duplex?: "half";
+        }
+      ).body = request.body;
+      (
+        requestInit as RequestInit & {
+          body?: ReadableStream<Uint8Array>;
+          duplex?: "half";
+        }
+      ).duplex = "half";
     }
   }
 
