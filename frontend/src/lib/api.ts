@@ -19,8 +19,12 @@ const isLocalBrowser =
   typeof window !== "undefined" &&
   (window.location.hostname === "localhost" ||
     window.location.hostname === "127.0.0.1");
+const shouldPreferSameOriginProxy =
+  typeof window !== "undefined" && !isLocalBrowser;
 const API_BASE_URL =
-  configuredApiBaseUrl === undefined
+  shouldPreferSameOriginProxy
+    ? ""
+    : configuredApiBaseUrl === undefined
     ? isLocalBrowser
       ? "http://localhost:8000"
       : ""
